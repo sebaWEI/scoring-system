@@ -7,12 +7,11 @@
 body {
     font-family: 'Orbitron', 'Microsoft YaHei', Arial, sans-serif;
     background: 
-        radial-gradient(circle at 20% 50%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(255, 0, 255, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 40% 80%, rgba(0, 255, 0, 0.1) 0%, transparent 50%),
-        linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #0a0a0a 100%);
+        radial-gradient(circle at 20% 50%, rgba(0, 150, 200, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(100, 0, 150, 0.05) 0%, transparent 50%),
+        linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
     min-height: 100vh;
-    color: #00ffff;
+    color: #b3e5fc;
     overflow-x: hidden;
     position: relative;
 }
@@ -28,9 +27,9 @@ body::before {
         repeating-linear-gradient(
             90deg,
             transparent,
-            transparent 2px,
-            rgba(0, 255, 255, 0.03) 2px,
-            rgba(0, 255, 255, 0.03) 4px
+            transparent 4px,
+            rgba(0, 150, 200, 0.02) 4px,
+            rgba(0, 150, 200, 0.02) 8px
         );
     pointer-events: none;
     z-index: 1;
@@ -46,15 +45,15 @@ body::before {
 
 header {
     background: 
-        linear-gradient(135deg, rgba(0, 255, 255, 0.1) 0%, rgba(255, 0, 255, 0.1) 100%),
-        rgba(0, 0, 0, 0.8);
+        linear-gradient(135deg, rgba(0, 150, 200, 0.08) 0%, rgba(100, 0, 150, 0.08) 100%),
+        rgba(0, 0, 0, 0.85);
     padding: 25px;
     border-radius: 15px;
     margin-bottom: 30px;
-    border: 2px solid rgba(0, 255, 255, 0.3);
+    border: 1px solid rgba(0, 150, 200, 0.2);
     box-shadow: 
-        0 0 20px rgba(0, 255, 255, 0.3),
-        inset 0 0 20px rgba(0, 255, 255, 0.1);
+        0 4px 15px rgba(0, 0, 0, 0.3),
+        inset 0 0 10px rgba(0, 150, 200, 0.05);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -70,8 +69,8 @@ header::before {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.2), transparent);
-    animation: scan 3s infinite;
+    background: linear-gradient(90deg, transparent, rgba(0, 150, 200, 0.1), transparent);
+    animation: scan 6s infinite;
 }
 
 @keyframes scan {
@@ -80,11 +79,11 @@ header::before {
 }
 
 header h1 {
-    color: #00ffff;
-    font-size: 2.5rem;
-    font-weight: 700;
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
-    letter-spacing: 2px;
+    color: #b3e5fc;
+    font-size: 2.2rem;
+    font-weight: 600;
+    text-shadow: 0 0 5px rgba(0, 150, 200, 0.3);
+    letter-spacing: 1px;
     position: relative;
     z-index: 3;
 }
@@ -98,15 +97,15 @@ header h1 {
 }
 
 .user-info span {
-    color: #00ffff;
+    color: #b3e5fc;
     font-weight: 500;
-    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+    text-shadow: 0 0 3px rgba(0, 150, 200, 0.3);
 }
 
 .logout-btn {
-    background: linear-gradient(45deg, #ff0066, #ff3366);
+    background: linear-gradient(45deg, #e53e3e, #c53030);
     color: white;
-    border: 2px solid rgba(255, 0, 102, 0.5);
+    border: 1px solid rgba(229, 62, 62, 0.3);
     padding: 10px 20px;
     border-radius: 8px;
     cursor: pointer;
@@ -115,7 +114,7 @@ header h1 {
     text-transform: uppercase;
     letter-spacing: 1px;
     transition: all 0.3s ease;
-    box-shadow: 0 0 15px rgba(255, 0, 102, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     position: relative;
     overflow: hidden;
 }
@@ -136,22 +135,22 @@ header h1 {
 }
 
 .logout-btn:hover {
-    background: linear-gradient(45deg, #ff3366, #ff6699);
-    box-shadow: 0 0 25px rgba(255, 0, 102, 0.6);
-    transform: translateY(-2px);
+    background: linear-gradient(45deg, #c53030, #e53e3e);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
 }
 
 .page {
     background: 
-        linear-gradient(135deg, rgba(0, 255, 255, 0.05) 0%, rgba(255, 0, 255, 0.05) 100%),
-        rgba(0, 0, 0, 0.7);
+        linear-gradient(135deg, rgba(0, 150, 200, 0.03) 0%, rgba(100, 0, 150, 0.03) 100%),
+        rgba(0, 0, 0, 0.8);
     padding: 40px;
-    border-radius: 20px;
-    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 15px;
+    border: 1px solid rgba(0, 150, 200, 0.15);
     box-shadow: 
-        0 0 30px rgba(0, 255, 255, 0.2),
-        inset 0 0 30px rgba(0, 255, 255, 0.05);
-    backdrop-filter: blur(15px);
+        0 4px 20px rgba(0, 0, 0, 0.3),
+        inset 0 0 10px rgba(0, 150, 200, 0.03);
+    backdrop-filter: blur(10px);
     position: relative;
     overflow: hidden;
 }
@@ -162,14 +161,14 @@ header h1 {
     top: 0;
     left: 0;
     right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #00ffff, transparent);
-    animation: pulse 2s infinite;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 150, 200, 0.5), transparent);
+    animation: pulse 4s infinite;
 }
 
 @keyframes pulse {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 1; }
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0.6; }
 }
 
 .login-container {
@@ -182,11 +181,11 @@ header h1 {
 .login-container h2 {
     text-align: center;
     margin-bottom: 40px;
-    color: #00ffff;
-    font-size: 2.2rem;
-    font-weight: 700;
-    text-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
-    letter-spacing: 3px;
+    color: #b3e5fc;
+    font-size: 2rem;
+    font-weight: 600;
+    text-shadow: 0 0 5px rgba(0, 150, 200, 0.3);
+    letter-spacing: 2px;
     text-transform: uppercase;
 }
 
@@ -199,8 +198,8 @@ header h1 {
     display: block;
     margin-bottom: 8px;
     font-weight: 600;
-    color: #00ffff;
-    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+    color: #b3e5fc;
+    text-shadow: 0 0 3px rgba(0, 150, 200, 0.3);
     font-size: 14px;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -210,26 +209,26 @@ header h1 {
     width: 100%;
     padding: 15px 20px;
     background: rgba(0, 0, 0, 0.6);
-    border: 2px solid rgba(0, 255, 255, 0.3);
-    border-radius: 10px;
+    border: 1px solid rgba(0, 150, 200, 0.3);
+    border-radius: 8px;
     font-size: 16px;
-    color: #00ffff;
+    color: #b3e5fc;
     transition: all 0.3s ease;
-    box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.1);
+    box-shadow: inset 0 0 5px rgba(0, 150, 200, 0.05);
     font-family: 'Orbitron', 'Microsoft YaHei', Arial, sans-serif;
 }
 
 .form-group input:focus {
     outline: none;
-    border-color: #00ffff;
+    border-color: #4fc3f7;
     box-shadow: 
-        0 0 20px rgba(0, 255, 255, 0.4),
-        inset 0 0 20px rgba(0, 255, 255, 0.1);
+        0 0 10px rgba(0, 150, 200, 0.2),
+        inset 0 0 10px rgba(0, 150, 200, 0.05);
     background: rgba(0, 0, 0, 0.8);
 }
 
 .form-group input::placeholder {
-    color: rgba(0, 255, 255, 0.5);
+    color: rgba(179, 229, 252, 0.5);
     font-style: italic;
 }
 
@@ -268,67 +267,66 @@ header h1 {
 }
 
 .btn-primary {
-    background: linear-gradient(45deg, #00ffff, #0099ff);
+    background: linear-gradient(45deg, #4fc3f7, #29b6f6);
     color: #000;
     width: 100%;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
-    border-color: rgba(0, 255, 255, 0.5);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    border-color: rgba(79, 195, 247, 0.3);
 }
 
 .btn-primary:hover {
-    background: linear-gradient(45deg, #0099ff, #00ccff);
-    box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
-    transform: translateY(-3px);
+    background: linear-gradient(45deg, #29b6f6, #03a9f4);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
     color: #000;
 }
 
 .btn-success {
-    background: linear-gradient(45deg, #00ff00, #00cc00);
-    color: #000;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
-    border-color: rgba(0, 255, 0, 0.5);
+    background: linear-gradient(45deg, #66bb6a, #4caf50);
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    border-color: rgba(102, 187, 106, 0.3);
 }
 
 .btn-success:hover {
-    background: linear-gradient(45deg, #00cc00, #00ff66);
-    box-shadow: 0 0 30px rgba(0, 255, 0, 0.6);
-    transform: translateY(-3px);
-    color: #000;
+    background: linear-gradient(45deg, #4caf50, #43a047);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
 }
 
 .btn-danger {
-    background: linear-gradient(45deg, #ff0066, #ff3366);
+    background: linear-gradient(45deg, #ef5350, #e53935);
     color: white;
-    box-shadow: 0 0 20px rgba(255, 0, 102, 0.4);
-    border-color: rgba(255, 0, 102, 0.5);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    border-color: rgba(239, 83, 80, 0.3);
 }
 
 .btn-danger:hover {
-    background: linear-gradient(45deg, #ff3366, #ff6699);
-    box-shadow: 0 0 30px rgba(255, 0, 102, 0.6);
-    transform: translateY(-3px);
+    background: linear-gradient(45deg, #e53935, #d32f2f);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
 }
 
 .login-tips {
     margin-top: 40px;
     padding: 25px;
-    background: rgba(0, 255, 255, 0.05);
-    border-radius: 15px;
-    border: 1px solid rgba(0, 255, 255, 0.2);
-    box-shadow: inset 0 0 20px rgba(0, 255, 255, 0.1);
+    background: rgba(0, 150, 200, 0.03);
+    border-radius: 12px;
+    border: 1px solid rgba(0, 150, 200, 0.15);
+    box-shadow: inset 0 0 10px rgba(0, 150, 200, 0.05);
     backdrop-filter: blur(10px);
 }
 
 .login-tips p {
     margin-bottom: 8px;
-    color: #00ffff;
-    text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+    color: #b3e5fc;
+    text-shadow: 0 0 3px rgba(0, 150, 200, 0.2);
     font-weight: 500;
 }
 
 .login-tips strong {
-    color: #00ff00;
-    text-shadow: 0 0 8px rgba(0, 255, 0, 0.5);
+    color: #81c784;
+    text-shadow: 0 0 3px rgba(129, 199, 132, 0.3);
 }
 
 .student-list {
@@ -338,11 +336,11 @@ header h1 {
 
 .student-card {
     background: 
-        linear-gradient(135deg, rgba(0, 255, 255, 0.05) 0%, rgba(255, 0, 255, 0.05) 100%),
-        rgba(0, 0, 0, 0.6);
+        linear-gradient(135deg, rgba(0, 150, 200, 0.03) 0%, rgba(100, 0, 150, 0.03) 100%),
+        rgba(0, 0, 0, 0.7);
     padding: 25px;
-    border-radius: 15px;
-    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 12px;
+    border: 1px solid rgba(0, 150, 200, 0.15);
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
     position: relative;
@@ -355,22 +353,22 @@ header h1 {
     top: 0;
     left: 0;
     right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #00ffff, transparent);
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 150, 200, 0.5), transparent);
     opacity: 0;
     transition: opacity 0.3s;
 }
 
 .student-card:hover::before {
-    opacity: 1;
+    opacity: 0.6;
 }
 
 .student-card:hover {
-    border-color: #00ffff;
-    transform: translateY(-5px);
+    border-color: #4fc3f7;
+    transform: translateY(-3px);
     box-shadow: 
-        0 0 30px rgba(0, 255, 255, 0.3),
-        inset 0 0 30px rgba(0, 255, 255, 0.1);
+        0 4px 20px rgba(0, 0, 0, 0.3),
+        inset 0 0 10px rgba(0, 150, 200, 0.05);
 }
 
 .student-header {
@@ -416,15 +414,15 @@ header h1 {
 .student-name {
     font-size: 1.3rem;
     font-weight: 700;
-    color: #00ffff;
-    text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+    color: #b3e5fc;
+    text-shadow: 0 0 3px rgba(0, 150, 200, 0.3);
     letter-spacing: 1px;
 }
 
 .student-id {
-    color: rgba(0, 255, 255, 0.7);
+    color: rgba(179, 229, 252, 0.7);
     font-size: 0.9rem;
-    text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+    text-shadow: 0 0 3px rgba(0, 150, 200, 0.2);
     font-weight: 500;
 }
 
@@ -444,8 +442,8 @@ header h1 {
 .score-item label {
     margin-bottom: 8px;
     font-weight: 600;
-    color: #00ffff;
-    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+    color: #b3e5fc;
+    text-shadow: 0 0 3px rgba(0, 150, 200, 0.3);
     font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -454,40 +452,40 @@ header h1 {
 .score-item input {
     padding: 12px 15px;
     background: rgba(0, 0, 0, 0.6);
-    border: 2px solid rgba(0, 255, 255, 0.3);
-    border-radius: 8px;
+    border: 1px solid rgba(0, 150, 200, 0.3);
+    border-radius: 6px;
     font-size: 14px;
-    color: #00ffff;
+    color: #b3e5fc;
     transition: all 0.3s ease;
-    box-shadow: inset 0 0 8px rgba(0, 255, 255, 0.1);
+    box-shadow: inset 0 0 5px rgba(0, 150, 200, 0.05);
     font-family: 'Orbitron', 'Microsoft YaHei', Arial, sans-serif;
 }
 
 .score-item input:focus {
     outline: none;
-    border-color: #00ffff;
+    border-color: #4fc3f7;
     box-shadow: 
-        0 0 15px rgba(0, 255, 255, 0.4),
-        inset 0 0 15px rgba(0, 255, 255, 0.1);
+        0 0 8px rgba(0, 150, 200, 0.2),
+        inset 0 0 8px rgba(0, 150, 200, 0.05);
     background: rgba(0, 0, 0, 0.8);
 }
 
 .submit-btn {
     grid-column: 1 / -1;
     margin-top: 20px;
-    background: linear-gradient(45deg, #00ff00, #00cc00);
-    color: #000;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
-    border-color: rgba(0, 255, 0, 0.5);
+    background: linear-gradient(45deg, #66bb6a, #4caf50);
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    border-color: rgba(102, 187, 106, 0.3);
     font-size: 16px;
     padding: 18px 30px;
 }
 
 .submit-btn:hover {
-    background: linear-gradient(45deg, #00cc00, #00ff66);
-    box-shadow: 0 0 30px rgba(0, 255, 0, 0.6);
-    transform: translateY(-3px);
-    color: #000;
+    background: linear-gradient(45deg, #4caf50, #43a047);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+    color: white;
 }
 
 .admin-controls {
@@ -506,34 +504,34 @@ header h1 {
 table {
     width: 100%;
     border-collapse: collapse;
-    background: rgba(0, 0, 0, 0.6);
-    border-radius: 15px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
-    border: 1px solid rgba(0, 255, 255, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 150, 200, 0.15);
     backdrop-filter: blur(10px);
 }
 
 th, td {
     padding: 15px;
     text-align: left;
-    border-bottom: 1px solid rgba(0, 255, 255, 0.1);
-    color: #00ffff;
-    text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+    border-bottom: 1px solid rgba(0, 150, 200, 0.1);
+    color: #b3e5fc;
+    text-shadow: 0 0 3px rgba(0, 150, 200, 0.2);
 }
 
 th {
-    background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(255, 0, 255, 0.2));
-    color: #00ffff;
+    background: linear-gradient(135deg, rgba(0, 150, 200, 0.15), rgba(100, 0, 150, 0.15));
+    color: #b3e5fc;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    text-shadow: 0 0 3px rgba(0, 150, 200, 0.3);
 }
 
 tr:hover {
-    background: rgba(0, 255, 255, 0.05);
-    box-shadow: inset 0 0 20px rgba(0, 255, 255, 0.1);
+    background: rgba(0, 150, 200, 0.03);
+    box-shadow: inset 0 0 10px rgba(0, 150, 200, 0.05);
 }
 
 .alert {
@@ -567,24 +565,24 @@ tr:hover {
 }
 
 .alert-success {
-    background: linear-gradient(45deg, rgba(0, 255, 0, 0.2), rgba(0, 255, 0, 0.1));
-    color: #00ff00;
-    border-color: rgba(0, 255, 0, 0.5);
-    box-shadow: 0 0 25px rgba(0, 255, 0, 0.3);
+    background: linear-gradient(45deg, rgba(102, 187, 106, 0.2), rgba(102, 187, 106, 0.1));
+    color: #66bb6a;
+    border-color: rgba(102, 187, 106, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .alert-error {
-    background: linear-gradient(45deg, rgba(255, 0, 102, 0.2), rgba(255, 0, 102, 0.1));
-    color: #ff0066;
-    border-color: rgba(255, 0, 102, 0.5);
-    box-shadow: 0 0 25px rgba(255, 0, 102, 0.3);
+    background: linear-gradient(45deg, rgba(239, 83, 80, 0.2), rgba(239, 83, 80, 0.1));
+    color: #ef5350;
+    border-color: rgba(239, 83, 80, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .alert-warning {
-    background: linear-gradient(45deg, rgba(255, 170, 0, 0.2), rgba(255, 170, 0, 0.1));
-    color: #ffaa00;
-    border-color: rgba(255, 170, 0, 0.5);
-    box-shadow: 0 0 25px rgba(255, 170, 0, 0.3);
+    background: linear-gradient(45deg, rgba(255, 183, 77, 0.2), rgba(255, 183, 77, 0.1));
+    color: #ffb74d;
+    border-color: rgba(255, 183, 77, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 /* 网络版特有样式 */
@@ -606,24 +604,24 @@ tr:hover {
 .simple-info {
     margin-top: 30px;
     padding: 25px;
-    background: rgba(0, 255, 0, 0.05);
-    border-radius: 15px;
-    border: 1px solid rgba(0, 255, 0, 0.2);
-    box-shadow: inset 0 0 20px rgba(0, 255, 0, 0.1);
+    background: rgba(129, 199, 132, 0.03);
+    border-radius: 12px;
+    border: 1px solid rgba(129, 199, 132, 0.15);
+    box-shadow: inset 0 0 10px rgba(129, 199, 132, 0.05);
     backdrop-filter: blur(10px);
 }
 
 .simple-info p {
     margin-bottom: 8px;
-    color: rgba(0, 255, 0, 0.8);
+    color: rgba(179, 229, 252, 0.8);
     font-size: 14px;
-    text-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+    text-shadow: 0 0 3px rgba(0, 150, 200, 0.2);
     font-weight: 500;
 }
 
 .simple-info strong {
-    color: #00ff00;
-    text-shadow: 0 0 8px rgba(0, 255, 0, 0.5);
+    color: #81c784;
+    text-shadow: 0 0 3px rgba(129, 199, 132, 0.3);
 }
 
 /* 评委控制按钮样式 */
@@ -631,10 +629,10 @@ tr:hover {
     margin-bottom: 30px;
     text-align: center;
     padding: 25px;
-    background: rgba(0, 255, 255, 0.05);
-    border-radius: 15px;
-    border: 1px solid rgba(0, 255, 255, 0.2);
-    box-shadow: inset 0 0 20px rgba(0, 255, 255, 0.1);
+    background: rgba(0, 150, 200, 0.03);
+    border-radius: 12px;
+    border: 1px solid rgba(0, 150, 200, 0.15);
+    box-shadow: inset 0 0 10px rgba(0, 150, 200, 0.05);
     backdrop-filter: blur(10px);
     display: flex;
     flex-wrap: wrap;
@@ -647,72 +645,71 @@ tr:hover {
 }
 
 .btn-warning {
-    background: linear-gradient(45deg, #ffaa00, #ff8800);
-    color: #000;
-    box-shadow: 0 0 20px rgba(255, 170, 0, 0.4);
-    border-color: rgba(255, 170, 0, 0.5);
+    background: linear-gradient(45deg, #ffb74d, #ff9800);
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 183, 77, 0.3);
 }
 
 .btn-warning:hover {
-    background: linear-gradient(45deg, #ff8800, #ff6600);
-    box-shadow: 0 0 30px rgba(255, 170, 0, 0.6);
-    transform: translateY(-3px);
-    color: #000;
+    background: linear-gradient(45deg, #ff9800, #f57c00);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
 }
 
 .btn-info {
-    background: linear-gradient(45deg, #0099ff, #0066cc);
+    background: linear-gradient(45deg, #42a5f5, #2196f3);
     color: white;
-    box-shadow: 0 0 20px rgba(0, 153, 255, 0.4);
-    border-color: rgba(0, 153, 255, 0.5);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    border-color: rgba(66, 165, 245, 0.3);
 }
 
 .btn-info:hover {
-    background: linear-gradient(45deg, #0066cc, #0099ff);
-    box-shadow: 0 0 30px rgba(0, 153, 255, 0.6);
-    transform: translateY(-3px);
+    background: linear-gradient(45deg, #2196f3, #1976d2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
 }
 
 /* 进度统计样式 */
 .progress-summary {
-    background: rgba(0, 255, 255, 0.05);
+    background: rgba(0, 150, 200, 0.03);
     padding: 25px;
-    border-radius: 15px;
+    border-radius: 12px;
     margin-bottom: 30px;
-    border: 1px solid rgba(0, 255, 255, 0.2);
-    box-shadow: inset 0 0 20px rgba(0, 255, 255, 0.1);
+    border: 1px solid rgba(0, 150, 200, 0.15);
+    box-shadow: inset 0 0 10px rgba(0, 150, 200, 0.05);
     backdrop-filter: blur(10px);
 }
 
 .progress-summary h3 {
-    color: #00ffff;
+    color: #b3e5fc;
     margin-bottom: 20px;
-    font-size: 1.4rem;
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    font-size: 1.3rem;
+    text-shadow: 0 0 3px rgba(0, 150, 200, 0.3);
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
 }
 
 .progress-summary p {
     margin-bottom: 10px;
-    color: rgba(0, 255, 255, 0.8);
+    color: rgba(179, 229, 252, 0.8);
     font-size: 16px;
-    text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+    text-shadow: 0 0 3px rgba(0, 150, 200, 0.2);
 }
 
 .progress-summary p:last-child {
     font-weight: 700;
-    color: #00ff00;
-    font-size: 20px;
-    text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+    color: #81c784;
+    font-size: 18px;
+    text-shadow: 0 0 3px rgba(129, 199, 132, 0.3);
 }
 
 .sync-status {
-    background: rgba(0, 255, 255, 0.05);
+    background: rgba(0, 150, 200, 0.03);
     padding: 15px 20px;
-    border-radius: 10px;
+    border-radius: 8px;
     margin-bottom: 25px;
-    border: 1px solid rgba(0, 255, 255, 0.2);
+    border: 1px solid rgba(0, 150, 200, 0.15);
     display: flex;
     align-items: center;
     gap: 15px;
@@ -720,9 +717,9 @@ tr:hover {
 }
 
 .sync-status span:first-child {
-    color: rgba(0, 255, 255, 0.8);
+    color: rgba(179, 229, 252, 0.8);
     font-weight: 500;
-    text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+    text-shadow: 0 0 3px rgba(0, 150, 200, 0.2);
 }
 
 .sync-indicator {
@@ -737,24 +734,24 @@ tr:hover {
 }
 
 .sync-indicator.syncing {
-    background: linear-gradient(45deg, rgba(255, 170, 0, 0.2), rgba(255, 170, 0, 0.1));
-    color: #ffaa00;
-    border-color: rgba(255, 170, 0, 0.5);
-    box-shadow: 0 0 15px rgba(255, 170, 0, 0.3);
+    background: linear-gradient(45deg, rgba(255, 183, 77, 0.2), rgba(255, 183, 77, 0.1));
+    color: #ffb74d;
+    border-color: rgba(255, 183, 77, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .sync-indicator.success {
-    background: linear-gradient(45deg, rgba(0, 255, 0, 0.2), rgba(0, 255, 0, 0.1));
-    color: #00ff00;
-    border-color: rgba(0, 255, 0, 0.5);
-    box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+    background: linear-gradient(45deg, rgba(102, 187, 106, 0.2), rgba(102, 187, 106, 0.1));
+    color: #66bb6a;
+    border-color: rgba(102, 187, 106, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .sync-indicator.error {
-    background: linear-gradient(45deg, rgba(255, 0, 102, 0.2), rgba(255, 0, 102, 0.1));
-    color: #ff0066;
-    border-color: rgba(255, 0, 102, 0.5);
-    box-shadow: 0 0 15px rgba(255, 0, 102, 0.3);
+    background: linear-gradient(45deg, rgba(239, 83, 80, 0.2), rgba(239, 83, 80, 0.1));
+    color: #ef5350;
+    border-color: rgba(239, 83, 80, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 768px) {
