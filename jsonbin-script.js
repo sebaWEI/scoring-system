@@ -23,41 +23,41 @@ const users = {
 
 // 学生数据（35个学生）
 const students = [
-    { id: '001', name: '张三', class: '计算机1班' },
-    { id: '002', name: '李四', class: '计算机1班' },
-    { id: '003', name: '王五', class: '计算机1班' },
-    { id: '004', name: '赵六', class: '计算机1班' },
-    { id: '005', name: '钱七', class: '计算机1班' },
-    { id: '006', name: '孙八', class: '计算机1班' },
-    { id: '007', name: '周九', class: '计算机1班' },
-    { id: '008', name: '吴十', class: '计算机1班' },
-    { id: '009', name: '郑十一', class: '计算机1班' },
-    { id: '010', name: '王十二', class: '计算机1班' },
-    { id: '011', name: '冯十三', class: '计算机1班' },
-    { id: '012', name: '陈十四', class: '计算机1班' },
-    { id: '013', name: '褚十五', class: '计算机1班' },
-    { id: '014', name: '卫十六', class: '计算机1班' },
-    { id: '015', name: '蒋十七', class: '计算机1班' },
-    { id: '016', name: '沈十八', class: '计算机1班' },
-    { id: '017', name: '韩十九', class: '计算机1班' },
-    { id: '018', name: '杨二十', class: '计算机1班' },
-    { id: '019', name: '朱二一', class: '计算机1班' },
-    { id: '020', name: '秦二二', class: '计算机1班' },
-    { id: '021', name: '尤二三', class: '计算机1班' },
-    { id: '022', name: '许二四', class: '计算机1班' },
-    { id: '023', name: '何二五', class: '计算机1班' },
-    { id: '024', name: '吕二六', class: '计算机1班' },
-    { id: '025', name: '施二七', class: '计算机1班' },
-    { id: '026', name: '张二八', class: '计算机1班' },
-    { id: '027', name: '孔二九', class: '计算机1班' },
-    { id: '028', name: '曹三十', class: '计算机1班' },
-    { id: '029', name: '严三一', class: '计算机1班' },
-    { id: '030', name: '华三二', class: '计算机1班' },
-    { id: '031', name: '金三三', class: '计算机1班' },
-    { id: '032', name: '魏三四', class: '计算机1班' },
-    { id: '033', name: '陶三五', class: '计算机1班' },
-    { id: '034', name: '姜三六', class: '计算机1班' },
-    { id: '035', name: '戚三七', class: '计算机1班' }
+    { id: '001' },
+    { id: '002' },
+    { id: '003' },
+    { id: '004' },
+    { id: '005' },
+    { id: '006' },
+    { id: '007' },
+    { id: '008' },
+    { id: '009' },
+    { id: '010' },
+    { id: '011' },
+    { id: '012' },
+    { id: '013' },
+    { id: '014' },
+    { id: '015' },
+    { id: '016' },
+    { id: '017' },
+    { id: '018' },
+    { id: '019' },
+    { id: '020' },
+    { id: '021' },
+    { id: '022' },
+    { id: '023' },
+    { id: '024' },
+    { id: '025' },
+    { id: '026' },
+    { id: '027' },
+    { id: '028' },
+    { id: '029' },
+    { id: '030' },
+    { id: '031' },
+    { id: '032' },
+    { id: '033' },
+    { id: '034' },
+    { id: '035' }
 ];
 
 // 评分项目
@@ -326,7 +326,6 @@ function renderStudentList() {
         
         studentCard.innerHTML = `
             <div class="student-header">
-                <div class="student-name">${student.name}</div>
                 <div class="student-id">学号：${student.id}</div>
                 <div class="score-status ${isScored ? 'scored' : 'not-scored'}">
                     ${isScored ? '已评分' : '未评分'}
@@ -442,8 +441,6 @@ function renderResultsTable() {
             <thead>
                 <tr>
                     <th>学号</th>
-                    <th>姓名</th>
-                    <th>班级</th>
                     ${Object.keys(users).filter(username => users[username].role === 'judge').map(username => 
                         `<th>${users[username].name}</th>`
                     ).join('')}
@@ -478,8 +475,6 @@ function renderResultsTable() {
         tableHTML += `
             <tr>
                 <td>${student.id}</td>
-                <td>${student.name}</td>
-                <td>${student.class}</td>
                 ${judgeScores.map(score => `<td>${score}</td>`).join('')}
                 <td>${averageScore}</td>
                 <td>${totalScore}</td>
@@ -503,7 +498,7 @@ function exportToExcel() {
     const workbookData = [];
     
     // 添加表头
-    const headers = ['学号', '姓名', '班级'];
+    const headers = ['学号'];
     Object.keys(users).forEach(username => {
         if (users[username].role === 'judge') {
             headers.push(users[username].name);
@@ -515,7 +510,7 @@ function exportToExcel() {
     // 添加数据行
     students.forEach(student => {
         const studentScores = scores[student.id] || {};
-        const row = [student.id, student.name, student.class];
+        const row = [student.id];
         
         let totalScore = 0;
         let judgeCount = 0;
