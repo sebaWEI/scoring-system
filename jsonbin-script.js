@@ -78,7 +78,7 @@ let currentUser = null;
 // JSONBin.io配置 - 请替换为您的实际配置
 const JSONBIN_CONFIG = {
     binId: '68bc1538d0ea881f4073c564', // 替换为您的Bin ID
-    apiKey: '$2a$10$M69mCff7TrvGixakZX7dTe7g6DNxzcB5auPCw3gYuUktMT9UMdbWm' // 替换为您的Private Key
+    apiKey: '$2a$10$3799PkhoU6ML.CCQ7sq4YOZLmgZXsEE8MvZ0/LS146WOvpz9VOO3K' // 替换为您的Private Key
 };
 
 // 初始化页面
@@ -221,10 +221,18 @@ async function fetchDataFromJsonBin() {
 
 // 更新同步状态
 function updateSyncStatus(status, text) {
+    // 更新评分页面的同步状态
     const indicator = document.getElementById('syncIndicator');
     if (indicator) {
         indicator.className = `sync-indicator ${status}`;
         indicator.textContent = text;
+    }
+    
+    // 更新管理员页面的同步状态
+    const adminIndicator = document.getElementById('adminSyncIndicator');
+    if (adminIndicator) {
+        adminIndicator.className = `sync-indicator ${status}`;
+        adminIndicator.textContent = text;
     }
 }
 
