@@ -3,61 +3,61 @@
 // 用户数据
 const users = {
     'admin': { password: '666666', role: 'admin', name: '管理员' },
-    'baihaoliang': { password: '123456', role: 'judge', name: 'baihaoliang' },
-    'wangweixue': { password: '123456', role: 'judge', name: 'wangweixue' },
-    'dingzihan': { password: '123456', role: 'judge', name: 'dingzihan' },
-    'weiziheng': { password: '123456', role: 'judge', name: 'weiziheng' },
-    'liding': { password: '123456', role: 'judge', name: 'liding' },
-    'wangxinyu': { password: '123456', role: 'judge', name: 'wangxinyu' },
-    'hanjiaxin': { password: '123456', role: 'judge', name: 'hanjiaxin' },
-    'shaoyongxiang': { password: '123456', role: 'judge', name: 'shaoyongxiang' },
-    'wangzihang': { password: '123456', role: 'judge', name: 'wangzihang' },
-    'xiepu': { password: '123456', role: 'judge', name: 'xiepu' },
-    'chensitong': { password: '123456', role: 'judge', name: 'chensitong' },
-    'leimurong': { password: '123456', role: 'judge', name: 'leimurong' },
-    'liujunyi': { password: '123456', role: 'judge', name: 'liujunyi' },
-    'zhangzhihan': { password: '123456', role: 'judge', name: 'zhangzhihan' },
-    'chenkemeng': { password: '123456', role: 'judge', name: 'chenkemeng' },
-    'liuyanjie': { password: '123456', role: 'judge', name: 'liuyanjie' }
+    'judge1': { password: '123456', role: 'judge', name: '评委1' },
+    'judge2': { password: '123456', role: 'judge', name: '评委2' },
+    'judge3': { password: '123456', role: 'judge', name: '评委3' },
+    'judge4': { password: '123456', role: 'judge', name: '评委4' },
+    'judge5': { password: '123456', role: 'judge', name: '评委5' },
+    'judge6': { password: '123456', role: 'judge', name: '评委6' },
+    'judge7': { password: '123456', role: 'judge', name: '评委7' },
+    'judge8': { password: '123456', role: 'judge', name: '评委8' },
+    'judge9': { password: '123456', role: 'judge', name: '评委9' },
+    'judge10': { password: '123456', role: 'judge', name: '评委10' },
+    'judge11': { password: '123456', role: 'judge', name: '评委11' },
+    'judge12': { password: '123456', role: 'judge', name: '评委12' },
+    'judge13': { password: '123456', role: 'judge', name: '评委13' },
+    'judge14': { password: '123456', role: 'judge', name: '评委14' },
+    'judge15': { password: '123456', role: 'judge', name: '评委15' },
+    'judge16': { password: '123456', role: 'judge', name: '评委16' }
 };
 
 // 学生数据（35个学生）
 const students = [
-    { id: '001'},
-    { id: '002'},
-    { id: '003'},
-    { id: '004'},
-    { id: '005'},
-    { id: '006'},
-    { id: '007'},
-    { id: '008'},
-    { id: '009'},
-    { id: '010'},
-    { id: '011'},
-    { id: '012'},
-    { id: '013'},
-    { id: '014'},
-    { id: '015'},
-    { id: '016'},
-    { id: '017'},
-    { id: '018'},
-    { id: '019'},
-    { id: '020'},
-    { id: '021'},
-    { id: '022'},
-    { id: '023'},
-    { id: '024'},
-    { id: '025'},
-    { id: '026'},
-    { id: '027'},
-    { id: '028'},
-    { id: '029'},
-    { id: '030'},
-    { id: '031'},
-    { id: '032'},
-    { id: '033'},
-    { id: '034'},
-    { id: '035'}
+    { id: '001', name: '张三', class: '计算机1班' },
+    { id: '002', name: '李四', class: '计算机1班' },
+    { id: '003', name: '王五', class: '计算机1班' },
+    { id: '004', name: '赵六', class: '计算机1班' },
+    { id: '005', name: '钱七', class: '计算机1班' },
+    { id: '006', name: '孙八', class: '计算机1班' },
+    { id: '007', name: '周九', class: '计算机1班' },
+    { id: '008', name: '吴十', class: '计算机1班' },
+    { id: '009', name: '郑十一', class: '计算机1班' },
+    { id: '010', name: '王十二', class: '计算机1班' },
+    { id: '011', name: '冯十三', class: '计算机1班' },
+    { id: '012', name: '陈十四', class: '计算机1班' },
+    { id: '013', name: '褚十五', class: '计算机1班' },
+    { id: '014', name: '卫十六', class: '计算机1班' },
+    { id: '015', name: '蒋十七', class: '计算机1班' },
+    { id: '016', name: '沈十八', class: '计算机1班' },
+    { id: '017', name: '韩十九', class: '计算机1班' },
+    { id: '018', name: '杨二十', class: '计算机1班' },
+    { id: '019', name: '朱二一', class: '计算机1班' },
+    { id: '020', name: '秦二二', class: '计算机1班' },
+    { id: '021', name: '尤二三', class: '计算机1班' },
+    { id: '022', name: '许二四', class: '计算机1班' },
+    { id: '023', name: '何二五', class: '计算机1班' },
+    { id: '024', name: '吕二六', class: '计算机1班' },
+    { id: '025', name: '施二七', class: '计算机1班' },
+    { id: '026', name: '张二八', class: '计算机1班' },
+    { id: '027', name: '孔二九', class: '计算机1班' },
+    { id: '028', name: '曹三十', class: '计算机1班' },
+    { id: '029', name: '严三一', class: '计算机1班' },
+    { id: '030', name: '华三二', class: '计算机1班' },
+    { id: '031', name: '金三三', class: '计算机1班' },
+    { id: '032', name: '魏三四', class: '计算机1班' },
+    { id: '033', name: '陶三五', class: '计算机1班' },
+    { id: '034', name: '姜三六', class: '计算机1班' },
+    { id: '035', name: '戚三七', class: '计算机1班' }
 ];
 
 // 评分项目
@@ -144,29 +144,19 @@ async function syncData() {
     try {
         updateSyncStatus('syncing', '同步中...');
         
-        // 先从服务器获取最新数据
+        // 先获取服务器数据
         const serverData = await fetchDataFromJsonBin();
         if (serverData) {
+            // 合并服务器数据到本地
             mergeServerData(serverData);
         }
         
-        // 只有非管理员角色才能上传数据
-        if (currentUser.role !== 'admin') {
-            // 获取本地数据
-            const localScores = JSON.parse(localStorage.getItem('scores') || '{}');
-            
-            // 检查是否有实际的评分数据（不只是空对象）
-            let hasActualScores = false;
-            Object.keys(localScores).forEach(studentId => {
-                if (Object.keys(localScores[studentId]).length > 0) {
-                    hasActualScores = true;
-                }
-            });
-            
-            // 只有当有实际评分数据时才上传（防止空数据覆盖服务器）
-            if (hasActualScores) {
-                await uploadDataToJsonBin(localScores);
-            }
+        // 获取合并后的本地数据
+        const localScores = JSON.parse(localStorage.getItem('scores') || '{}');
+        
+        // 如果有本地数据，上传到服务器（覆盖服务器数据）
+        if (Object.keys(localScores).length > 0) {
+            await uploadDataToJsonBin(localScores);
         }
         
         updateSyncStatus('success', '同步成功');
@@ -179,49 +169,19 @@ async function syncData() {
 
 // 上传数据到JSONBin.io
 async function uploadDataToJsonBin(scores) {
-    // 管理员角色不能上传数据，直接返回
-    if (currentUser && currentUser.role === 'admin') {
-        console.log('管理员角色不允许上传数据，以保护服务器数据安全');
-        return;
-    }
-    
     if (JSONBIN_CONFIG.binId === 'YOUR_BIN_ID_HERE') {
         console.log('请先配置JSONBin.io的Bin ID和API Key');
         return;
     }
     
     try {
-        // 过滤数据，只保留当前用户的数据
-        const userScoresOnly = {};
-        Object.keys(scores).forEach(studentId => {
-            userScoresOnly[studentId] = {};
-            // 只保留当前登录用户的评分数据
-            if (scores[studentId][currentUser.username]) {
-                userScoresOnly[studentId][currentUser.username] = scores[studentId][currentUser.username];
-            }
-        });
-        
-        // 获取服务器现有数据
-        const serverData = await fetchDataFromJsonBin() || {};
-        
-        // 合并数据：保留服务器上的所有数据，只更新当前用户的数据
-        Object.keys(userScoresOnly).forEach(studentId => {
-            if (!serverData[studentId]) {
-                serverData[studentId] = {};
-            }
-            // 只更新当前用户的数据
-            if (userScoresOnly[studentId][currentUser.username]) {
-                serverData[studentId][currentUser.username] = userScoresOnly[studentId][currentUser.username];
-            }
-        });
-        
         const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_CONFIG.binId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'X-Master-Key': JSONBIN_CONFIG.apiKey
             },
-            body: JSON.stringify(serverData)
+            body: JSON.stringify(scores)
         });
         
         if (response.ok) {
@@ -263,18 +223,10 @@ async function fetchDataFromJsonBin() {
 
 // 更新同步状态
 function updateSyncStatus(status, text) {
-    // 更新评分页面的同步状态
     const indicator = document.getElementById('syncIndicator');
     if (indicator) {
         indicator.className = `sync-indicator ${status}`;
         indicator.textContent = text;
-    }
-    
-    // 更新管理员页面的同步状态
-    const adminIndicator = document.getElementById('adminSyncIndicator');
-    if (adminIndicator) {
-        adminIndicator.className = `sync-indicator ${status}`;
-        adminIndicator.textContent = text;
     }
 }
 
@@ -282,13 +234,16 @@ function updateSyncStatus(status, text) {
 function mergeServerData(serverScores) {
     const localScores = JSON.parse(localStorage.getItem('scores') || '{}');
     
-    // 合并数据，服务器数据优先
+    // 智能合并数据：保留本地数据，只添加服务器中本地没有的数据
     Object.keys(serverScores).forEach(studentId => {
         if (!localScores[studentId]) {
             localScores[studentId] = {};
         }
         Object.keys(serverScores[studentId]).forEach(judgeUsername => {
-            localScores[studentId][judgeUsername] = serverScores[studentId][judgeUsername];
+            // 只有当本地没有该评委的评分时，才使用服务器数据
+            if (!localScores[studentId][judgeUsername]) {
+                localScores[studentId][judgeUsername] = serverScores[studentId][judgeUsername];
+            }
         });
     });
     
@@ -349,6 +304,7 @@ function renderStudentList() {
         
         studentCard.innerHTML = `
             <div class="student-header">
+                <div class="student-name">${student.name}</div>
                 <div class="student-id">学号：${student.id}</div>
                 <div class="score-status ${isScored ? 'scored' : 'not-scored'}">
                     ${isScored ? '已评分' : '未评分'}
@@ -464,6 +420,8 @@ function renderResultsTable() {
             <thead>
                 <tr>
                     <th>学号</th>
+                    <th>姓名</th>
+                    <th>班级</th>
                     ${Object.keys(users).filter(username => users[username].role === 'judge').map(username => 
                         `<th>${users[username].name}</th>`
                     ).join('')}
@@ -498,6 +456,8 @@ function renderResultsTable() {
         tableHTML += `
             <tr>
                 <td>${student.id}</td>
+                <td>${student.name}</td>
+                <td>${student.class}</td>
                 ${judgeScores.map(score => `<td>${score}</td>`).join('')}
                 <td>${averageScore}</td>
                 <td>${totalScore}</td>
@@ -521,7 +481,7 @@ function exportToExcel() {
     const workbookData = [];
     
     // 添加表头
-    const headers = ['学号'];
+    const headers = ['学号', '姓名', '班级'];
     Object.keys(users).forEach(username => {
         if (users[username].role === 'judge') {
             headers.push(users[username].name);
@@ -533,7 +493,7 @@ function exportToExcel() {
     // 添加数据行
     students.forEach(student => {
         const studentScores = scores[student.id] || {};
-        const row = [student.id];
+        const row = [student.id, student.name, student.class];
         
         let totalScore = 0;
         let judgeCount = 0;
