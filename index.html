@@ -33,17 +33,9 @@
                 </form>
                 <div class="login-tips">
                     <p><strong>默认账号：</strong></p>
-                    <p>班长：admin / 123456</p>
-                    <p>评委1：judge1 / 123456</p>
-                    <p>评委2：judge2 / 123456</p>
-                    <p>评委3：judge3 / 123456</p>
-                </div>
-                <div class="simple-info">
-                    <p><strong>简化版特点：</strong></p>
-                    <p>✅ 打开网址即可使用</p>
-                    <p>✅ 数据自动保存</p>
-                    <p>✅ 支持多设备访问</p>
-                    <p>✅ 无需任何配置</p>
+                    <p>管理员：admin / 123456</p>
+                    <p>评委1-16：judge1-judge16 / 123456</p>
+                    <p><small>（评委之间不能看到彼此的评分，只有管理员可以查看所有结果）</small></p>
                 </div>
             </div>
         </div>
@@ -51,6 +43,14 @@
         <!-- 评分页面 -->
         <div id="scoringPage" class="page" style="display: none;">
             <h2>学生评分</h2>
+            <div class="sync-status" id="syncStatus">
+                <span>数据同步状态：</span>
+                <span id="syncIndicator" class="sync-indicator">同步中...</span>
+            </div>
+            <div class="judge-controls">
+                <button onclick="clearCurrentUserData()" class="btn btn-warning">清空我的评分数据</button>
+                <button onclick="syncData()" class="btn btn-primary">手动同步数据</button>
+            </div>
             <div class="student-list" id="studentList">
                 <!-- 学生列表将通过JavaScript动态生成 -->
             </div>
@@ -70,6 +70,6 @@
         </div>
     </div>
 
-    <script src="simple-script.js"></script>
+    <script src="jsonbin-script.js"></script>
 </body>
 </html>
