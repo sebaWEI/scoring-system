@@ -1,37 +1,85 @@
-// 简化版综测评分系统
-// 使用浏览器本地存储，支持多设备数据同步
+// 支持JSONBin.io数据同步的综测评分系统
 
 // 用户数据
 const users = {
-    'admin': { password: '123456', role: 'admin', name: '班长' },
-    'judge1': { password: '123456', role: 'judge', name: '评委1' },
-    'judge2': { password: '123456', role: 'judge', name: '评委2' },
-    'judge3': { password: '123456', role: 'judge', name: '评委3' }
+    'admin': { password: '666666', role: 'admin', name: '管理员' },
+    'baihaoliang': { password: '123456', role: 'judge', name: 'baihaoliang' },
+    'wangweixue': { password: '123456', role: 'judge', name: 'wangweixue' },
+    'dingzihan': { password: '123456', role: 'judge', name: 'dingzihan' },
+    'weiziheng': { password: '123456', role: 'judge', name: 'weiziheng' },
+    'liding': { password: '123456', role: 'judge', name: 'liding' },
+    'wangxinyu': { password: '123456', role: 'judge', name: 'wangxinyu' },
+    'hanjiaxin': { password: '123456', role: 'judge', name: 'hanjiaxin' },
+    'shaoyongxiang': { password: '123456', role: 'judge', name: 'shaoyongxiang' },
+    'wangzihang': { password: '123456', role: 'judge', name: 'wangzihang' },
+    'xiepu': { password: '123456', role: 'judge', name: 'xiepu' },
+    'chensitong': { password: '123456', role: 'judge', name: 'chensitong' },
+    'leimurong': { password: '123456', role: 'judge', name: 'leimurong' },
+    'liujunyi': { password: '123456', role: 'judge', name: 'liujunyi' },
+    'zhangzhihan': { password: '123456', role: 'judge', name: 'zhangzhihan' },
+    'chenkemeng': { password: '123456', role: 'judge', name: 'chenkemeng' },
+    'liuyanjie': { password: '123456', role: 'judge', name: 'liuyanjie' }
 };
 
-// 学生数据
+// 学生数据（35个学生）
 const students = [
-    { id: '001', name: '张三', class: '计算机1班' },
-    { id: '002', name: '李四', class: '计算机1班' },
-    { id: '003', name: '王五', class: '计算机1班' },
-    { id: '004', name: '赵六', class: '计算机1班' },
-    { id: '005', name: '钱七', class: '计算机1班' },
-    { id: '006', name: '孙八', class: '计算机1班' },
-    { id: '007', name: '周九', class: '计算机1班' },
-    { id: '008', name: '吴十', class: '计算机1班' }
+    { id: '001'},
+    { id: '002'},
+    { id: '003'},
+    { id: '004'},
+    { id: '005'},
+    { id: '006'},
+    { id: '007'},
+    { id: '008'},
+    { id: '009'},
+    { id: '010'},
+    { id: '011'},
+    { id: '012'},
+    { id: '013'},
+    { id: '014'},
+    { id: '015'},
+    { id: '016'},
+    { id: '017'},
+    { id: '018'},
+    { id: '019'},
+    { id: '020'},
+    { id: '021'},
+    { id: '022'},
+    { id: '023'},
+    { id: '024'},
+    { id: '025'},
+    { id: '026'},
+    { id: '027'},
+    { id: '028'},
+    { id: '029'},
+    { id: '030'},
+    { id: '031'},
+    { id: '032'},
+    { id: '033'},
+    { id: '034'},
+    { id: '035'}
 ];
 
 // 评分项目
 const scoringItems = [
-    { key: 'academic', label: '学术表现', maxScore: 30 },
-    { key: 'social', label: '社会实践', maxScore: 25 },
-    { key: 'innovation', label: '创新创业', maxScore: 20 },
-    { key: 'culture', label: '文体活动', maxScore: 15 },
-    { key: 'morality', label: '品德表现', maxScore: 10 }
+    { key: 'ideology', label: '思想政治', maxScore: 100 },
+    { key: 'behavior', label: '行为规范', maxScore: 100 },
+    { key: 'attitude', label: '学习态度', maxScore: 100 },
+    { key: 'health', label: '身心健康', maxScore: 100 },
+    { key: 'academic', label: '学术科研', maxScore: 100 },
+    { key: 'social', label: '社会工作', maxScore: 100 },
+    { key: 'practice', label: '实践活动', maxScore: 100 }
 ];
 
 // 当前登录用户
 let currentUser = null;
+
+
+// JSONBin.io配置 - 请替换为您的实际配置
+const JSONBIN_CONFIG = {
+    binId: '68bc1538d0ea881f4073c564', // 替换为您的Bin ID
+    apiKey: '$2a$10$M69mCff7TrvGixakZX7dTe7g6DNxzcB5auPCw3gYuUktMT9UMdbWm' // 替换为您的Private Key
+};
 
 // 初始化页面
 document.addEventListener('DOMContentLoaded', function() {
@@ -52,8 +100,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // 绑定登录表单事件
     document.getElementById('loginForm').addEventListener('submit', handleLogin);
     
-    // 定期同步数据（通过URL参数）
-    setInterval(syncDataFromURL, 5000);
+    // 页面加载时同步一次
+    syncData();
 });
 
 // 处理登录
@@ -81,23 +129,102 @@ function handleLogin(e) {
         }
         
         showAlert('登录成功！', 'success');
+        
+        // 登录后立即同步数据
+        syncData();
     } else {
         showAlert('用户名或密码错误！', 'error');
     }
 }
 
-// 从URL参数同步数据
-function syncDataFromURL() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const dataParam = urlParams.get('data');
+// 同步数据到JSONBin.io
+async function syncData() {
+    if (!currentUser) return;
     
-    if (dataParam) {
-        try {
-            const serverData = JSON.parse(decodeURIComponent(dataParam));
-            mergeServerData(serverData);
-        } catch (error) {
-            console.log('URL数据解析失败');
+    try {
+        updateSyncStatus('syncing', '同步中...');
+        
+        // 获取本地数据
+        const localScores = JSON.parse(localStorage.getItem('scores') || '{}');
+        
+        // 如果有本地数据，先上传到服务器
+        if (Object.keys(localScores).length > 0) {
+            await uploadDataToJsonBin(localScores);
         }
+        
+        // 从服务器获取最新数据
+        const serverData = await fetchDataFromJsonBin();
+        if (serverData) {
+            mergeServerData(serverData);
+            updateSyncStatus('success', '同步成功');
+        }
+        
+    } catch (error) {
+        console.log('数据同步失败:', error);
+        updateSyncStatus('error', '同步失败');
+    }
+}
+
+// 上传数据到JSONBin.io
+async function uploadDataToJsonBin(scores) {
+    if (JSONBIN_CONFIG.binId === 'YOUR_BIN_ID_HERE') {
+        console.log('请先配置JSONBin.io的Bin ID和API Key');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_CONFIG.binId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Master-Key': JSONBIN_CONFIG.apiKey
+            },
+            body: JSON.stringify(scores)
+        });
+        
+        if (response.ok) {
+            console.log('数据上传成功');
+        } else {
+            console.error('数据上传失败:', response.statusText);
+        }
+    } catch (error) {
+        console.error('上传数据时出错:', error);
+    }
+}
+
+// 从JSONBin.io获取数据
+async function fetchDataFromJsonBin() {
+    if (JSONBIN_CONFIG.binId === 'YOUR_BIN_ID_HERE') {
+        console.log('请先配置JSONBin.io的Bin ID和API Key');
+        return null;
+    }
+    
+    try {
+        const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_CONFIG.binId}/latest`, {
+            headers: {
+                'X-Master-Key': JSONBIN_CONFIG.apiKey
+            }
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            return data.record || {};
+        } else {
+            console.error('获取数据失败:', response.statusText);
+            return null;
+        }
+    } catch (error) {
+        console.error('获取数据时出错:', error);
+        return null;
+    }
+}
+
+// 更新同步状态
+function updateSyncStatus(status, text) {
+    const indicator = document.getElementById('syncIndicator');
+    if (indicator) {
+        indicator.className = `sync-indicator ${status}`;
+        indicator.textContent = text;
     }
 }
 
@@ -172,8 +299,10 @@ function renderStudentList() {
         
         studentCard.innerHTML = `
             <div class="student-header">
-                <div class="student-name">${student.name}</div>
                 <div class="student-id">学号：${student.id}</div>
+                <div class="score-status ${isScored ? 'scored' : 'not-scored'}">
+                    ${isScored ? '已评分' : '未评分'}
+                </div>
             </div>
             <form class="scoring-form" onsubmit="submitScore(event, '${student.id}')">
                 ${scoringItems.map(item => `
@@ -212,10 +341,13 @@ function submitScore(event, studentId) {
         totalScore += value;
     });
     
+    // 检查是否为更新操作
+    const isUpdate = getStudentScore(studentId, currentUser.username) !== null;
+    
     // 保存评分数据
     saveStudentScore(studentId, currentUser.username, score, totalScore);
     
-    showAlert('评分提交成功！', 'success');
+    showAlert(isUpdate ? '评分更新成功！请点击"手动同步数据"按钮同步到云端。' : '评分提交成功！请点击"手动同步数据"按钮同步到云端。', 'success');
     
     // 重新渲染学生列表
     setTimeout(() => {
@@ -246,18 +378,42 @@ function getStudentScore(studentId, judgeUsername) {
     return scores[studentId] && scores[studentId][judgeUsername] ? scores[studentId][judgeUsername].score : null;
 }
 
-// 渲染结果表格
+// 渲染结果表格（只有管理员可以看到）
 function renderResultsTable() {
     const resultsTable = document.getElementById('resultsTable');
     const scores = JSON.parse(localStorage.getItem('scores') || '{}');
     
+    // 统计评分进度
+    let totalStudents = students.length;
+    let scoredStudents = 0;
+    let totalJudges = Object.keys(users).filter(username => users[username].role === 'judge').length;
+    let completedJudges = 0;
+    
+    // 计算完成情况
+    Object.keys(users).forEach(username => {
+        if (users[username].role === 'judge') {
+            let judgeCompleted = true;
+            students.forEach(student => {
+                if (!scores[student.id] || !scores[student.id][username]) {
+                    judgeCompleted = false;
+                }
+            });
+            if (judgeCompleted) completedJudges++;
+        }
+    });
+    
     let tableHTML = `
+        <div class="progress-summary">
+            <h3>评分进度统计</h3>
+            <p>总学生数：${totalStudents}人</p>
+            <p>评委总数：${totalJudges}人</p>
+            <p>已完成评分的评委：${completedJudges}人</p>
+            <p>完成率：${((completedJudges / totalJudges) * 100).toFixed(1)}%</p>
+        </div>
         <table>
             <thead>
                 <tr>
                     <th>学号</th>
-                    <th>姓名</th>
-                    <th>班级</th>
                     ${Object.keys(users).filter(username => users[username].role === 'judge').map(username => 
                         `<th>${users[username].name}</th>`
                     ).join('')}
@@ -292,8 +448,6 @@ function renderResultsTable() {
         tableHTML += `
             <tr>
                 <td>${student.id}</td>
-                <td>${student.name}</td>
-                <td>${student.class}</td>
                 ${judgeScores.map(score => `<td>${score}</td>`).join('')}
                 <td>${averageScore}</td>
                 <td>${totalScore}</td>
@@ -317,7 +471,7 @@ function exportToExcel() {
     const workbookData = [];
     
     // 添加表头
-    const headers = ['学号', '姓名', '班级'];
+    const headers = ['学号'];
     Object.keys(users).forEach(username => {
         if (users[username].role === 'judge') {
             headers.push(users[username].name);
@@ -329,7 +483,7 @@ function exportToExcel() {
     // 添加数据行
     students.forEach(student => {
         const studentScores = scores[student.id] || {};
-        const row = [student.id, student.name, student.class];
+        const row = [student.id];
         
         let totalScore = 0;
         let judgeCount = 0;
@@ -400,6 +554,30 @@ function copyAllData() {
     navigator.clipboard.writeText(dataString).then(() => {
         showAlert('所有数据已复制到剪贴板！', 'success');
     });
+}
+
+// 清空当前用户的数据
+function clearCurrentUserData() {
+    if (confirm('确定要清空当前用户的所有评分数据吗？此操作不可恢复！')) {
+        const scores = JSON.parse(localStorage.getItem('scores') || '{}');
+        
+        // 清空当前用户的所有评分
+        Object.keys(scores).forEach(studentId => {
+            if (scores[studentId][currentUser.username]) {
+                delete scores[studentId][currentUser.username];
+            }
+        });
+        
+        localStorage.setItem('scores', JSON.stringify(scores));
+        showAlert('当前用户数据已清空！', 'success');
+        
+        // 重新渲染页面
+        if (currentUser.role === 'admin') {
+            renderResultsTable();
+        } else {
+            renderStudentList();
+        }
+    }
 }
 
 // 退出登录
