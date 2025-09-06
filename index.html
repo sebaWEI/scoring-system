@@ -37,6 +37,13 @@
                     <p>评委1-16：judge1-judge16 / 123456</p>
                     <p><small>（评委之间不能看到彼此的评分，只有管理员可以查看所有结果）</small></p>
                 </div>
+                <div class="simple-info">
+                    <p><strong>简化版特点：</strong></p>
+                    <p>✅ 打开网址即可使用</p>
+                    <p>✅ 数据自动保存</p>
+                    <p>✅ 支持多设备访问</p>
+                    <p>✅ 无需任何配置</p>
+                </div>
             </div>
         </div>
 
@@ -60,6 +67,7 @@
         <div id="adminPage" class="page" style="display: none;">
             <h2>评分管理</h2>
             <div class="admin-controls">
+                <button onclick="uploadDataToServer()" class="btn btn-warning">上传数据到服务器</button>
                 <button onclick="exportToExcel()" class="btn btn-success">导出Excel</button>
                 <button onclick="shareLink()" class="btn btn-info">分享链接</button>
                 <button onclick="copyAllData()" class="btn btn-primary">复制所有数据</button>
