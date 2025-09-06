@@ -151,6 +151,14 @@ async function syncData() {
             mergeServerData(serverData);
         }
         
+        // 获取合并后的本地数据
+        const localScores = JSON.parse(localStorage.getItem('scores') || '{}');
+        
+        // 如果有本地数据，上传到服务器
+        if (Object.keys(localScores).length > 0) {
+            await uploadDataToJsonBin(localScores);
+        }
+        
         updateSyncStatus('success', '同步成功');
         
     } catch (error) {
