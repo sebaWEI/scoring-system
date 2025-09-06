@@ -78,7 +78,8 @@ let currentUser = null;
 // JSONBin.io配置 - 请替换为您的实际配置
 const JSONBIN_CONFIG = {
     binId: '68bc403443b1c97be93900a1', // 替换为您的Bin ID
-    apiKey: '$2a$10$M69mCff7TrvGixakZX7dTe7g6DNxzcB5auPCw3gYuUktMT9UMdbWm' // 替换为您的Private Key
+    masterKey: '$2a$10$M69mCff7TrvGixakZX7dTe7g6DNxzcB5auPCw3gYuUktMT9UMdbWm', // 替换为您的Master Key
+    accessKey: '$2a$10$M69mCff7TrvGixakZX7dTe7g6DNxzcB5auPCw3gYuUktMT9UMdbWm' // 替换为您的Access Key
 };
 
 // 检查JSONBin.io配置
@@ -87,8 +88,12 @@ function checkJsonBinConfig() {
         console.error('JSONBin.io配置错误: 请设置正确的Bin ID');
         return false;
     }
-    if (JSONBIN_CONFIG.apiKey === 'YOUR_API_KEY_HERE' || !JSONBIN_CONFIG.apiKey) {
-        console.error('JSONBin.io配置错误: 请设置正确的API Key');
+    if (JSONBIN_CONFIG.masterKey === 'YOUR_MASTER_KEY_HERE' || !JSONBIN_CONFIG.masterKey) {
+        console.error('JSONBin.io配置错误: 请设置正确的Master Key');
+        return false;
+    }
+    if (JSONBIN_CONFIG.accessKey === 'YOUR_ACCESS_KEY_HERE' || !JSONBIN_CONFIG.accessKey) {
+        console.error('JSONBin.io配置错误: 请设置正确的Access Key');
         return false;
     }
     return true;
@@ -172,31 +177,16 @@ async function syncData() {
             const uploadSuccess = await uploadDataToJsonBin(localScores);
             if (uploadSuccess) {
                 updateSyncStatus('success', '同步成功');
-<<<<<<< Updated upstream
             } else {
                 updateSyncStatus('error', '上传失败');
             }
         } else {
             updateSyncStatus('success', '同步成功（无本地数据）');
-=======
-                return true;
-            } else {
-                updateSyncStatus('error', '上传失败');
-                return false;
-            }
-        } else {
-            updateSyncStatus('success', '同步成功（无本地数据）');
-            return true;
->>>>>>> Stashed changes
         }
         
     } catch (error) {
         console.error('数据同步失败:', error);
         updateSyncStatus('error', `同步失败: ${error.message}`);
-<<<<<<< Updated upstream
-=======
-        throw error;
->>>>>>> Stashed changes
     }
 }
 
@@ -214,7 +204,8 @@ async function uploadDataToJsonBin(scores) {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'X-Master-Key': JSONBIN_CONFIG.apiKey,
+                'X-Master-Key': JSONBIN_CONFIG.masterKey,
+                'X-Access-Key': JSONBIN_CONFIG.accessKey,
                 'X-Bin-Name': 'scoring-system-data',
                 'X-Bin-Private': 'true'
             },
@@ -250,7 +241,8 @@ async function fetchDataFromJsonBin() {
         
         const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_CONFIG.binId}/latest`, {
             headers: {
-                'X-Master-Key': JSONBIN_CONFIG.apiKey,
+                'X-Master-Key': JSONBIN_CONFIG.masterKey,
+                'X-Access-Key': JSONBIN_CONFIG.accessKey,
                 'X-Bin-Private': 'true'
             }
         });
@@ -723,8 +715,10 @@ async function testJsonBinConnection() {
         
         console.log('当前配置:', {
             binId: JSONBIN_CONFIG.binId,
-            apiKeyLength: JSONBIN_CONFIG.apiKey ? JSONBIN_CONFIG.apiKey.length : 0,
-            apiKeyPrefix: JSONBIN_CONFIG.apiKey ? JSONBIN_CONFIG.apiKey.substring(0, 10) + '...' : 'none'
+            masterKeyLength: JSONBIN_CONFIG.masterKey ? JSONBIN_CONFIG.masterKey.length : 0,
+            accessKeyLength: JSONBIN_CONFIG.accessKey ? JSONBIN_CONFIG.accessKey.length : 0,
+            masterKeyPrefix: JSONBIN_CONFIG.masterKey ? JSONBIN_CONFIG.masterKey.substring(0, 10) + '...' : 'none',
+            accessKeyPrefix: JSONBIN_CONFIG.accessKey ? JSONBIN_CONFIG.accessKey.substring(0, 10) + '...' : 'none'
         });
         
         // 测试获取数据
@@ -781,3 +775,4 @@ function showAlert(message, type) {
         }
     }, 3000);
 }
+
