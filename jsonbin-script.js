@@ -3,61 +3,61 @@
 // 用户数据
 const users = {
     'admin': { password: '666666', role: 'admin', name: '管理员' },
-    'judge1': { password: '123456', role: 'judge', name: '评委1' },
-    'judge2': { password: '123456', role: 'judge', name: '评委2' },
-    'judge3': { password: '123456', role: 'judge', name: '评委3' },
-    'judge4': { password: '123456', role: 'judge', name: '评委4' },
-    'judge5': { password: '123456', role: 'judge', name: '评委5' },
-    'judge6': { password: '123456', role: 'judge', name: '评委6' },
-    'judge7': { password: '123456', role: 'judge', name: '评委7' },
-    'judge8': { password: '123456', role: 'judge', name: '评委8' },
-    'judge9': { password: '123456', role: 'judge', name: '评委9' },
-    'judge10': { password: '123456', role: 'judge', name: '评委10' },
-    'judge11': { password: '123456', role: 'judge', name: '评委11' },
-    'judge12': { password: '123456', role: 'judge', name: '评委12' },
-    'judge13': { password: '123456', role: 'judge', name: '评委13' },
-    'judge14': { password: '123456', role: 'judge', name: '评委14' },
-    'judge15': { password: '123456', role: 'judge', name: '评委15' },
-    'judge16': { password: '123456', role: 'judge', name: '评委16' }
+    'wangxinyu': { password: '307301', role: 'judge', name: '王鑫宇' },
+    'shaoyongxiang': { password: '307302', role: 'judge', name: '邵泳翔' },
+    'dingzihan': { password: '307303', role: 'judge', name: '丁子涵' },
+    'liujunyi': { password: '307305', role: 'judge', name: '刘军易' },
+    'wangjixue': { password: '307307', role: 'judge', name: '王激雪' },
+    'chensitong': { password: '307308', role: 'judge', name: '陈思彤' },
+    'chenkemeng': { password: '307313', role: 'judge', name: '陈可萌' },
+    'liuyanjie': { password: '307316', role: 'judge', name: '刘燕洁' },
+    'zhangzhihan': { password: '307317', role: 'judge', name: '张智涵' },
+    'xiepu': { password: '307320', role: 'judge', name: '谢溥' },
+    'baihaoliang': { password: '307321', role: 'judge', name: '柏昊良' },
+    'weiziheng': { password: '307322', role: 'judge', name: '魏子恒' },
+    'liding': { password: '307326', role: 'judge', name: '李丁' },
+    'hanjiaxin': { password: '307327', role: 'judge', name: '韩佳鑫' },
+    'wangzihang': { password: '307328', role: 'judge', name: '王子航' },
+    'leimurong': { password: '108114', role: 'judge', name: '雷沐蓉' }
 };
 
 // 学生数据（35个学生）
 const students = [
-    { id: '001' },
-    { id: '002' },
-    { id: '003' },
-    { id: '004' },
-    { id: '005' },
-    { id: '006' },
-    { id: '007' },
-    { id: '008' },
-    { id: '009' },
-    { id: '010' },
-    { id: '011' },
-    { id: '012' },
-    { id: '013' },
-    { id: '014' },
-    { id: '015' },
-    { id: '016' },
-    { id: '017' },
-    { id: '018' },
-    { id: '019' },
-    { id: '020' },
-    { id: '021' },
-    { id: '022' },
-    { id: '023' },
-    { id: '024' },
-    { id: '025' },
-    { id: '026' },
-    { id: '027' },
-    { id: '028' },
-    { id: '029' },
-    { id: '030' },
-    { id: '031' },
-    { id: '032' },
-    { id: '033' },
-    { id: '034' },
-    { id: '035' }
+    { id: '001', name: '学生001' },
+    { id: '002', name: '学生002' },
+    { id: '003', name: '学生003' },
+    { id: '004', name: '学生004' },
+    { id: '005', name: '学生005' },
+    { id: '006', name: '学生006' },
+    { id: '007', name: '学生007' },
+    { id: '008', name: '学生008' },
+    { id: '009', name: '学生009' },
+    { id: '010', name: '学生010' },
+    { id: '011', name: '学生011' },
+    { id: '012', name: '学生012' },
+    { id: '013', name: '学生013' },
+    { id: '014', name: '学生014' },
+    { id: '015', name: '学生015' },
+    { id: '016', name: '学生016' },
+    { id: '017', name: '学生017' },
+    { id: '018', name: '学生018' },
+    { id: '019', name: '学生019' },
+    { id: '020', name: '学生020' },
+    { id: '021', name: '学生021' },
+    { id: '022', name: '学生022' },
+    { id: '023', name: '学生023' },
+    { id: '024', name: '学生024' },
+    { id: '025', name: '学生025' },
+    { id: '026', name: '学生026' },
+    { id: '027', name: '学生027' },
+    { id: '028', name: '学生028' },
+    { id: '029', name: '学生029' },
+    { id: '030', name: '学生030' },
+    { id: '031', name: '学生031' },
+    { id: '032', name: '学生032' },
+    { id: '033', name: '学生033' },
+    { id: '034', name: '学生034' },
+    { id: '035', name: '学生035' }
 ];
 
 // 评分项目
@@ -101,34 +101,62 @@ function checkJsonBinConfig() {
 
 // 初始化页面
 document.addEventListener('DOMContentLoaded', function() {
-    // 检查是否有保存的登录状态
-    const savedUser = localStorage.getItem('currentUser');
-    if (savedUser) {
-        currentUser = JSON.parse(savedUser);
-        showUserInfo();
-        if (currentUser.role === 'admin') {
-            showAdminPage();
-        } else {
-            showScoringPage();
-        }
-    } else {
-        showLoginPage();
-    }
-
-    // 绑定登录表单事件
-    document.getElementById('loginForm').addEventListener('submit', handleLogin);
+    console.log('页面初始化开始...');
     
-    // 页面加载时同步一次
-    syncData();
+    try {
+        // 检查是否有保存的登录状态
+        const savedUser = localStorage.getItem('currentUser');
+        console.log('保存的用户状态:', savedUser);
+        
+        if (savedUser) {
+            currentUser = JSON.parse(savedUser);
+            console.log('当前用户:', currentUser);
+            showUserInfo();
+            if (currentUser.role === 'admin') {
+                showAdminPage();
+            } else {
+                showScoringPage();
+            }
+        } else {
+            console.log('没有保存的登录状态，显示登录页面');
+            showLoginPage();
+        }
+
+        // 绑定登录表单事件
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+            console.log('绑定登录表单事件');
+            loginForm.addEventListener('submit', handleLogin);
+        } else {
+            console.error('找不到登录表单元素！');
+        }
+        
+        // 页面加载时同步一次（只有在已登录的情况下）
+        if (savedUser) {
+            console.log('开始同步数据...');
+            syncData();
+        }
+        
+        console.log('页面初始化完成');
+    } catch (error) {
+        console.error('页面初始化出错:', error);
+    }
 });
 
 // 处理登录
 function handleLogin(e) {
     e.preventDefault();
+    console.log('开始处理登录...');
+    
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
+    
+    console.log('用户名:', username);
+    console.log('密码长度:', password.length);
 
     if (users[username] && users[username].password === password) {
+        console.log('登录验证成功');
+        
         currentUser = {
             username: username,
             role: users[username].role,
@@ -137,20 +165,25 @@ function handleLogin(e) {
         
         // 保存登录状态
         localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        console.log('登录状态已保存');
         
         showUserInfo();
         
         if (currentUser.role === 'admin') {
+            console.log('显示管理页面');
             showAdminPage();
         } else {
+            console.log('显示评分页面');
             showScoringPage();
         }
         
         showAlert('登录成功！', 'success');
         
         // 登录后立即同步数据
+        console.log('开始同步数据...');
         syncData();
     } else {
+        console.log('登录验证失败');
         showAlert('用户名或密码错误！', 'error');
     }
 }
@@ -270,6 +303,9 @@ function updateSyncStatus(status, text) {
     if (indicator) {
         indicator.className = `sync-indicator ${status}`;
         indicator.textContent = text;
+    } else {
+        // 如果元素不存在，只在控制台输出
+        console.log(`同步状态: ${status} - ${text}`);
     }
 }
 
@@ -377,7 +413,10 @@ function renderStudentList() {
         
         studentCard.innerHTML = `
             <div class="student-header">
-                <div class="student-id">学号：${student.id}</div>
+                <div class="student-info">
+                    <div class="student-name">${student.name}</div>
+                    <div class="student-id">学号：${student.id}</div>
+                </div>
                 <div class="score-status ${isScored ? 'scored' : 'not-scored'}">
                     ${isScored ? '已评分' : '未评分'}
                 </div>
