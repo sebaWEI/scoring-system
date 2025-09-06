@@ -81,6 +81,19 @@ const JSONBIN_CONFIG = {
     apiKey: '$2a$10$M69mCff7TrvGixakZX7dTe7g6DNxzcB5auPCw3gYuUktMT9UMdbWm' // 替换为您的Private Key
 };
 
+// 检查JSONBin.io配置
+function checkJsonBinConfig() {
+    if (JSONBIN_CONFIG.binId === 'YOUR_BIN_ID_HERE' || !JSONBIN_CONFIG.binId) {
+        console.error('JSONBin.io配置错误: 请设置正确的Bin ID');
+        return false;
+    }
+    if (JSONBIN_CONFIG.apiKey === 'YOUR_API_KEY_HERE' || !JSONBIN_CONFIG.apiKey) {
+        console.error('JSONBin.io配置错误: 请设置正确的API Key');
+        return false;
+    }
+    return true;
+}
+
 // 初始化页面
 document.addEventListener('DOMContentLoaded', function() {
     // 检查是否有保存的登录状态
@@ -156,63 +169,86 @@ async function syncData() {
         
         // 如果有本地数据，上传到服务器
         if (Object.keys(localScores).length > 0) {
-            await uploadDataToJsonBin(localScores);
+            const uploadSuccess = await uploadDataToJsonBin(localScores);
+            if (uploadSuccess) {
+                updateSyncStatus('success', '同步成功');
+            } else {
+                updateSyncStatus('error', '上传失败');
+            }
+        } else {
+            updateSyncStatus('success', '同步成功（无本地数据）');
         }
         
-        updateSyncStatus('success', '同步成功');
-        
     } catch (error) {
-        console.log('数据同步失败:', error);
-        updateSyncStatus('error', '同步失败');
+        console.error('数据同步失败:', error);
+        updateSyncStatus('error', `同步失败: ${error.message}`);
     }
 }
 
 // 上传数据到JSONBin.io
 async function uploadDataToJsonBin(scores) {
-    if (JSONBIN_CONFIG.binId === 'YOUR_BIN_ID_HERE') {
+    if (!checkJsonBinConfig()) {
         console.log('请先配置JSONBin.io的Bin ID和API Key');
-        return;
+        return false;
     }
     
     try {
+        console.log('开始上传数据到JSONBin.io...', { binId: JSONBIN_CONFIG.binId, dataSize: Object.keys(scores).length });
+        
         const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_CONFIG.binId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'X-Master-Key': JSONBIN_CONFIG.apiKey
+                'X-Master-Key': JSONBIN_CONFIG.apiKey,
+                'X-Bin-Name': 'scoring-system-data',
+                'X-Bin-Private': 'true'
             },
             body: JSON.stringify(scores)
         });
         
+        console.log('上传响应状态:', response.status, response.statusText);
+        
         if (response.ok) {
-            console.log('数据上传成功');
+            const result = await response.json();
+            console.log('数据上传成功:', result);
+            return true;
         } else {
-            console.error('数据上传失败:', response.statusText);
+            const errorText = await response.text();
+            console.error('数据上传失败:', response.status, response.statusText, errorText);
+            throw new Error(`上传失败: ${response.status} ${response.statusText} - ${errorText}`);
         }
     } catch (error) {
         console.error('上传数据时出错:', error);
+        throw error;
     }
 }
 
 // 从JSONBin.io获取数据
 async function fetchDataFromJsonBin() {
-    if (JSONBIN_CONFIG.binId === 'YOUR_BIN_ID_HERE') {
+    if (!checkJsonBinConfig()) {
         console.log('请先配置JSONBin.io的Bin ID和API Key');
         return null;
     }
     
     try {
+        console.log('从JSONBin.io获取数据...', { binId: JSONBIN_CONFIG.binId });
+        
         const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_CONFIG.binId}/latest`, {
             headers: {
-                'X-Master-Key': JSONBIN_CONFIG.apiKey
+                'X-Master-Key': JSONBIN_CONFIG.apiKey,
+                'X-Bin-Private': 'true'
             }
         });
         
+        console.log('获取数据响应状态:', response.status, response.statusText);
+        
         if (response.ok) {
             const data = await response.json();
+            console.log('成功获取数据:', data);
             return data.record || {};
         } else {
-            console.error('获取数据失败:', response.statusText);
+            const errorText = await response.text();
+            console.error('获取数据失败:', response.status, response.statusText, errorText);
             return null;
         }
     } catch (error) {
@@ -592,13 +628,19 @@ async function uploadDataToServer() {
     
     try {
         updateSyncStatus('syncing', '上传中...');
-        await uploadDataToJsonBin(scores);
-        updateSyncStatus('success', '上传成功');
-        showAlert('数据已成功上传到服务器！', 'success');
+        const uploadSuccess = await uploadDataToJsonBin(scores);
+        
+        if (uploadSuccess) {
+            updateSyncStatus('success', '上传成功');
+            showAlert('数据已成功上传到服务器！', 'success');
+        } else {
+            updateSyncStatus('error', '上传失败');
+            showAlert('数据上传失败！请检查网络连接和API配置。', 'error');
+        }
     } catch (error) {
         console.error('上传失败:', error);
         updateSyncStatus('error', '上传失败');
-        showAlert('数据上传失败！', 'error');
+        showAlert(`数据上传失败！错误信息: ${error.message}`, 'error');
     }
 }
 
@@ -642,6 +684,56 @@ function logout() {
     currentUser = null;
     showLoginPage();
     showAlert('已退出登录', 'success');
+}
+
+// 测试JSONBin.io连接
+async function testJsonBinConnection() {
+    try {
+        updateSyncStatus('syncing', '测试连接中...');
+        
+        // 首先检查配置
+        if (!checkJsonBinConfig()) {
+            updateSyncStatus('error', '配置错误');
+            showAlert('JSONBin.io配置错误！请检查Bin ID和API Key是否正确设置。', 'error');
+            return;
+        }
+        
+        console.log('当前配置:', {
+            binId: JSONBIN_CONFIG.binId,
+            apiKeyLength: JSONBIN_CONFIG.apiKey ? JSONBIN_CONFIG.apiKey.length : 0,
+            apiKeyPrefix: JSONBIN_CONFIG.apiKey ? JSONBIN_CONFIG.apiKey.substring(0, 10) + '...' : 'none'
+        });
+        
+        // 测试获取数据
+        console.log('测试获取数据...');
+        const testData = await fetchDataFromJsonBin();
+        console.log('测试获取数据结果:', testData);
+        
+        // 测试上传数据（上传一个测试对象）
+        console.log('测试上传数据...');
+        const testScores = { 
+            test: { 
+                testUser: { 
+                    score: { test: 100 }, 
+                    totalScore: 100, 
+                    timestamp: new Date().toISOString() 
+                } 
+            } 
+        };
+        const uploadResult = await uploadDataToJsonBin(testScores);
+        
+        if (uploadResult) {
+            updateSyncStatus('success', '连接测试成功');
+            showAlert('JSONBin.io连接测试成功！数据可以正常上传和获取。', 'success');
+        } else {
+            updateSyncStatus('error', '连接测试失败');
+            showAlert('JSONBin.io连接测试失败！请检查网络连接和API配置。', 'error');
+        }
+    } catch (error) {
+        console.error('连接测试失败:', error);
+        updateSyncStatus('error', '连接测试失败');
+        showAlert(`连接测试失败: ${error.message}。请检查控制台获取详细错误信息。`, 'error');
+    }
 }
 
 // 显示提示信息
