@@ -172,16 +172,31 @@ async function syncData() {
             const uploadSuccess = await uploadDataToJsonBin(localScores);
             if (uploadSuccess) {
                 updateSyncStatus('success', '同步成功');
+<<<<<<< Updated upstream
             } else {
                 updateSyncStatus('error', '上传失败');
             }
         } else {
             updateSyncStatus('success', '同步成功（无本地数据）');
+=======
+                return true;
+            } else {
+                updateSyncStatus('error', '上传失败');
+                return false;
+            }
+        } else {
+            updateSyncStatus('success', '同步成功（无本地数据）');
+            return true;
+>>>>>>> Stashed changes
         }
         
     } catch (error) {
         console.error('数据同步失败:', error);
         updateSyncStatus('error', `同步失败: ${error.message}`);
+<<<<<<< Updated upstream
+=======
+        throw error;
+>>>>>>> Stashed changes
     }
 }
 
@@ -399,7 +414,7 @@ function renderStudentList() {
 }
 
 // 提交评分
-function submitScore(event, studentId) {
+async function submitScore(event, studentId) {
     event.preventDefault();
     
     const formData = new FormData(event.target);
@@ -418,7 +433,15 @@ function submitScore(event, studentId) {
     // 保存评分数据
     saveStudentScore(studentId, currentUser.username, score, totalScore);
     
-    showAlert(isUpdate ? '评分更新成功！请点击"手动同步数据"按钮同步到云端。' : '评分提交成功！请点击"手动同步数据"按钮同步到云端。', 'success');
+    // 自动同步到云端
+    try {
+        updateSyncStatus('syncing', '正在同步到云端...');
+        await syncData();
+        showAlert(isUpdate ? '评分更新成功！已自动同步到云端。' : '评分提交成功！已自动同步到云端。', 'success');
+    } catch (error) {
+        console.error('自动同步失败:', error);
+        showAlert(isUpdate ? '评分更新成功！但同步到云端失败，请手动点击"同步数据"按钮。' : '评分提交成功！但同步到云端失败，请手动点击"同步数据"按钮。', 'warning');
+    }
     
     // 重新渲染学生列表
     setTimeout(() => {
