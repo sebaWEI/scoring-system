@@ -144,20 +144,29 @@ async function syncData() {
     try {
         updateSyncStatus('syncing', '同步中...');
         
-        // 获取本地数据
-        const localScores = JSON.parse(localStorage.getItem('scores') || '{}');
-        
-        // 如果有本地数据，先上传到服务器
-        if (Object.keys(localScores).length > 0) {
-            await uploadDataToJsonBin(localScores);
-        }
-        
-        // 从服务器获取最新数据
+        // 先从服务器获取最新数据
         const serverData = await fetchDataFromJsonBin();
         if (serverData) {
             mergeServerData(serverData);
-            updateSyncStatus('success', '同步成功');
         }
+        
+        // 获取本地数据
+        const localScores = JSON.parse(localStorage.getItem('scores') || '{}');
+        
+        // 检查是否有实际的评分数据（不只是空对象）
+        let hasActualScores = false;
+        Object.keys(localScores).forEach(studentId => {
+            if (Object.keys(localScores[studentId]).length > 0) {
+                hasActualScores = true;
+            }
+        });
+        
+        // 只有当有实际评分数据时才上传（防止空数据覆盖服务器）
+        if (hasActualScores) {
+            await uploadDataToJsonBin(localScores);
+        }
+        
+        updateSyncStatus('success', '同步成功');
         
     } catch (error) {
         console.log('数据同步失败:', error);
