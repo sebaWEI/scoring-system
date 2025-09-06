@@ -78,7 +78,7 @@ let currentUser = null;
 // JSONBin.io配置 - 请替换为您的实际配置
 const JSONBIN_CONFIG = {
     binId: '68bc1538d0ea881f4073c564', // 替换为您的Bin ID
-    apiKey: '$2a$10$M69mCff7TrvGixakZX7dTe7g6DNxzcB5auPCw3gYuUktMT9UMdbWm' // 替换为您的Private Key
+    apiKey: '$2a$10$3799PkhoU6ML.CCQ7sq4YOZLmgZXsEE8MvZ0/LS146WOvpz9VOO3K' // 替换为您的Private Key
 };
 
 // 初始化页面
@@ -150,20 +150,23 @@ async function syncData() {
             mergeServerData(serverData);
         }
         
-        // 获取本地数据
-        const localScores = JSON.parse(localStorage.getItem('scores') || '{}');
-        
-        // 检查是否有实际的评分数据（不只是空对象）
-        let hasActualScores = false;
-        Object.keys(localScores).forEach(studentId => {
-            if (Object.keys(localScores[studentId]).length > 0) {
-                hasActualScores = true;
+        // 只有非管理员角色才能上传数据
+        if (currentUser.role !== 'admin') {
+            // 获取本地数据
+            const localScores = JSON.parse(localStorage.getItem('scores') || '{}');
+            
+            // 检查是否有实际的评分数据（不只是空对象）
+            let hasActualScores = false;
+            Object.keys(localScores).forEach(studentId => {
+                if (Object.keys(localScores[studentId]).length > 0) {
+                    hasActualScores = true;
+                }
+            });
+            
+            // 只有当有实际评分数据时才上传（防止空数据覆盖服务器）
+            if (hasActualScores) {
+                await uploadDataToJsonBin(localScores);
             }
-        });
-        
-        // 只有当有实际评分数据时才上传（防止空数据覆盖服务器）
-        if (hasActualScores) {
-            await uploadDataToJsonBin(localScores);
         }
         
         updateSyncStatus('success', '同步成功');
@@ -176,19 +179,49 @@ async function syncData() {
 
 // 上传数据到JSONBin.io
 async function uploadDataToJsonBin(scores) {
+    // 管理员角色不能上传数据，直接返回
+    if (currentUser && currentUser.role === 'admin') {
+        console.log('管理员角色不允许上传数据，以保护服务器数据安全');
+        return;
+    }
+    
     if (JSONBIN_CONFIG.binId === 'YOUR_BIN_ID_HERE') {
         console.log('请先配置JSONBin.io的Bin ID和API Key');
         return;
     }
     
     try {
+        // 过滤数据，只保留当前用户的数据
+        const userScoresOnly = {};
+        Object.keys(scores).forEach(studentId => {
+            userScoresOnly[studentId] = {};
+            // 只保留当前登录用户的评分数据
+            if (scores[studentId][currentUser.username]) {
+                userScoresOnly[studentId][currentUser.username] = scores[studentId][currentUser.username];
+            }
+        });
+        
+        // 获取服务器现有数据
+        const serverData = await fetchDataFromJsonBin() || {};
+        
+        // 合并数据：保留服务器上的所有数据，只更新当前用户的数据
+        Object.keys(userScoresOnly).forEach(studentId => {
+            if (!serverData[studentId]) {
+                serverData[studentId] = {};
+            }
+            // 只更新当前用户的数据
+            if (userScoresOnly[studentId][currentUser.username]) {
+                serverData[studentId][currentUser.username] = userScoresOnly[studentId][currentUser.username];
+            }
+        });
+        
         const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_CONFIG.binId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'X-Master-Key': JSONBIN_CONFIG.apiKey
             },
-            body: JSON.stringify(scores)
+            body: JSON.stringify(serverData)
         });
         
         if (response.ok) {
