@@ -151,14 +151,6 @@ async function syncData() {
             mergeServerData(serverData);
         }
         
-        // 获取合并后的本地数据
-        const localScores = JSON.parse(localStorage.getItem('scores') || '{}');
-        
-        // 如果有本地数据，上传到服务器（覆盖服务器数据）
-        if (Object.keys(localScores).length > 0) {
-            await uploadDataToJsonBin(localScores);
-        }
-        
         updateSyncStatus('success', '同步成功');
         
     } catch (error) {
@@ -228,6 +220,36 @@ function updateSyncStatus(status, text) {
         indicator.className = `sync-indicator ${status}`;
         indicator.textContent = text;
     }
+}
+
+// 检查本地是否有新数据
+async function hasLocalNewData(localScores, serverScores) {
+    if (!serverScores || Object.keys(serverScores).length === 0) {
+        return Object.keys(localScores).length > 0;
+    }
+    
+    // 检查是否有新的学生评分
+    for (const studentId in localScores) {
+        if (!serverScores[studentId]) {
+            return true; // 本地有新的学生数据
+        }
+        
+        // 检查是否有新的评委评分
+        for (const judgeUsername in localScores[studentId]) {
+            if (!serverScores[studentId][judgeUsername]) {
+                return true; // 本地有新的评委评分
+            }
+            
+            // 检查时间戳，如果本地数据更新则认为是新数据
+            const localTimestamp = localScores[studentId][judgeUsername].timestamp;
+            const serverTimestamp = serverScores[studentId][judgeUsername].timestamp;
+            if (localTimestamp && serverTimestamp && localTimestamp > serverTimestamp) {
+                return true; // 本地数据更新
+            }
+        }
+    }
+    
+    return false;
 }
 
 // 合并服务器数据
@@ -553,6 +575,27 @@ function shareLink() {
         navigator.clipboard.writeText(url).then(() => {
             showAlert('链接已复制到剪贴板！', 'success');
         });
+    }
+}
+
+// 上传数据到服务器
+async function uploadDataToServer() {
+    const scores = JSON.parse(localStorage.getItem('scores') || '{}');
+    
+    if (Object.keys(scores).length === 0) {
+        showAlert('没有数据需要上传！', 'warning');
+        return;
+    }
+    
+    try {
+        updateSyncStatus('syncing', '上传中...');
+        await uploadDataToJsonBin(scores);
+        updateSyncStatus('success', '上传成功');
+        showAlert('数据已成功上传到服务器！', 'success');
+    } catch (error) {
+        console.error('上传失败:', error);
+        updateSyncStatus('error', '上传失败');
+        showAlert('数据上传失败！', 'error');
     }
 }
 
