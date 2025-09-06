@@ -7,7 +7,7 @@ const users = {
     'shaoyongxiang': { password: '307302', role: 'judge', name: '邵泳翔' },
     'dingzihan': { password: '307303', role: 'judge', name: '丁子涵' },
     'liujunyi': { password: '307305', role: 'judge', name: '刘军易' },
-    'wangjixue': { password: '307307', role: 'judge', name: '王激雪' },
+    'wangweixue': { password: '307307', role: 'judge', name: '王溦雪' },
     'chensitong': { password: '307308', role: 'judge', name: '陈思彤' },
     'chenkemeng': { password: '307313', role: 'judge', name: '陈可萌' },
     'liuyanjie': { password: '307316', role: 'judge', name: '刘燕洁' },
