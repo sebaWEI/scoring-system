@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>综测评分系统 - 简化版</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>综测评分系统</h1>
+            <div class="user-info" id="userInfo" style="display: none;">
+                <span id="currentUser"></span>
+                <button onclick="logout()" class="logout-btn">退出登录</button>
+            </div>
+        </header>
+
+        <!-- 登录页面 -->
+        <div id="loginPage" class="page">
+            <div class="login-container">
+                <h2>用户登录</h2>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="username">用户名：</label>
+                        <input type="text" id="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">密码：</label>
+                        <input type="password" id="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">登录</button>
+                </form>
+                <div class="login-tips">
+                    <p><strong>默认账号：</strong></p>
+                    <p>班长：admin / 123456</p>
+                    <p>评委1：judge1 / 123456</p>
+                    <p>评委2：judge2 / 123456</p>
+                    <p>评委3：judge3 / 123456</p>
+                </div>
+                <div class="simple-info">
+                    <p><strong>简化版特点：</strong></p>
+                    <p>✅ 打开网址即可使用</p>
+                    <p>✅ 数据自动保存</p>
+                    <p>✅ 支持多设备访问</p>
+                    <p>✅ 无需任何配置</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 评分页面 -->
+        <div id="scoringPage" class="page" style="display: none;">
+            <h2>学生评分</h2>
+            <div class="student-list" id="studentList">
+                <!-- 学生列表将通过JavaScript动态生成 -->
+            </div>
+        </div>
+
+        <!-- 管理页面 -->
+        <div id="adminPage" class="page" style="display: none;">
+            <h2>评分管理</h2>
+            <div class="admin-controls">
+                <button onclick="exportToExcel()" class="btn btn-success">导出Excel</button>
+                <button onclick="shareLink()" class="btn btn-info">分享链接</button>
+                <button onclick="copyAllData()" class="btn btn-primary">复制所有数据</button>
+            </div>
+            <div class="results-table" id="resultsTable">
+                <!-- 结果表格将通过JavaScript动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <script src="simple-script.js"></script>
+</body>
+</html>
