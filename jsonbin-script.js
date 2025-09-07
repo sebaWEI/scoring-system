@@ -559,6 +559,16 @@ function renderResultsTable() {
     const resultsTable = document.getElementById('resultsTable');
     const scores = JSON.parse(localStorage.getItem('scoringData') || '{}');
     
+    // 检查是否有数据在scores键中（兼容旧数据）
+    const scoresData = JSON.parse(localStorage.getItem('scores') || '{}');
+    if (Object.keys(scores).length === 0 && Object.keys(scoresData).length > 0) {
+        console.log('发现数据在scores键中，正在合并到scoringData...');
+        localStorage.setItem('scoringData', JSON.stringify(scoresData));
+        // 重新获取数据
+        const mergedScores = JSON.parse(localStorage.getItem('scoringData') || '{}');
+        return renderResultsTable(); // 递归调用以重新渲染
+    }
+    
     // 统计评分进度
     let totalStudents = students.length;
     let totalJudges = Object.keys(users).filter(username => users[username].role === 'judge').length;
@@ -1020,6 +1030,63 @@ async function clearAllScores() {
     } catch (error) {
         console.error('清除数据时出错:', error);
         showAlert('清除数据时出错，请重试！', 'error');
+    }
+}
+
+// 测试函数：创建测试数据
+function createTestData() {
+    const testData = {
+        "001": {
+            "wangxinyu": {
+                score: {
+                    ideology: 100,
+                    behavior: 100,
+                    attitude: 100,
+                    health: 100,
+                    academic: 100,
+                    social: 100,
+                    practice: 100
+                },
+                totalScore: 700,
+                timestamp: new Date().toISOString()
+            },
+            "shaoyongxiang": {
+                score: {
+                    ideology: 90,
+                    behavior: 95,
+                    attitude: 85,
+                    health: 90,
+                    academic: 95,
+                    social: 85,
+                    practice: 90
+                },
+                totalScore: 630,
+                timestamp: new Date().toISOString()
+            }
+        },
+        "002": {
+            "wangxinyu": {
+                score: {
+                    ideology: 95,
+                    behavior: 90,
+                    attitude: 95,
+                    health: 85,
+                    academic: 90,
+                    social: 95,
+                    practice: 85
+                },
+                totalScore: 635,
+                timestamp: new Date().toISOString()
+            }
+        }
+    };
+    
+    localStorage.setItem('scoringData', JSON.stringify(testData));
+    console.log('测试数据已创建:', testData);
+    
+    // 刷新管理员界面
+    if (currentUser && currentUser.role === 'admin') {
+        renderResultsTable();
     }
 }
 
