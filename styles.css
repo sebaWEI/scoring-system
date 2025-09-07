@@ -870,3 +870,36 @@ tr:hover {
         padding: 15px;
     }
 }
+
+/* 错误信息样式 */
+.error-message {
+    text-align: center;
+    padding: 40px 20px;
+    background: rgba(255, 0, 0, 0.1);
+    border: 2px solid rgba(255, 0, 0, 0.3);
+    border-radius: 12px;
+    margin: 20px 0;
+}
+
+.error-message h3 {
+    color: #ff6b6b;
+    margin-bottom: 15px;
+    text-shadow: 0 0 10px rgba(255, 107, 107, 0.3);
+}
+
+.error-message p {
+    color: #e0e0e0;
+    margin: 10px 0;
+    line-height: 1.6;
+}
+
+.error-message .btn {
+    margin: 5px 10px;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px 20px;
+    color: #b3e5fc;
+    font-size: 1.1em;
+}
