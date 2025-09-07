@@ -638,41 +638,90 @@ function exportToExcel() {
     // 创建工作簿数据
     const workbookData = [];
     
-    // 添加表头
-    const headers = ['学号'];
-    Object.keys(users).forEach(username => {
-        if (users[username].role === 'judge') {
-            headers.push(users[username].name);
-        }
-    });
-    headers.push('平均分', '总分');
-    workbookData.push(headers);
+    // 添加总体统计信息
+    workbookData.push(['综测评分详细数据导出']);
+    workbookData.push(['导出时间', new Date().toLocaleString()]);
+    workbookData.push(['总学生数', students.length]);
+    workbookData.push(['评委总数', Object.keys(users).filter(username => users[username].role === 'judge').length]);
+    workbookData.push([]); // 空行
     
-    // 添加数据行
+    // 为每个学生创建详细评分数据
     students.forEach(student => {
         const studentScores = scores[student.id] || {};
-        const row = [student.id];
         
+        // 学生信息标题
+        workbookData.push([`学生: ${student.name} (学号: ${student.id})`]);
+        workbookData.push([]);
+        
+        // 表头
+        const headers = ['评委'];
+        scoringItems.forEach(item => {
+            headers.push(item.label);
+        });
+        headers.push('总分', '评分时间');
+        workbookData.push(headers);
+        
+        // 每个评委的评分数据
+        Object.keys(users).forEach(username => {
+            if (users[username].role === 'judge') {
+                const score = studentScores[username];
+                const row = [users[username].name];
+                
+                if (score) {
+                    scoringItems.forEach(item => {
+                        row.push(score[item.key] || 0);
+                    });
+                    row.push(score.totalScore);
+                    row.push(new Date(score.timestamp).toLocaleString());
+                } else {
+                    scoringItems.forEach(() => {
+                        row.push(0);
+                    });
+                    row.push(0);
+                    row.push('未评分');
+                }
+                
+                workbookData.push(row);
+            }
+        });
+        
+        // 计算该学生的平均分
         let totalScore = 0;
         let judgeCount = 0;
+        const itemAverages = {};
+        
+        // 初始化各项平均分
+        scoringItems.forEach(item => {
+            itemAverages[item.key] = 0;
+        });
         
         Object.keys(users).forEach(username => {
             if (users[username].role === 'judge') {
                 const score = studentScores[username];
                 if (score) {
-                    row.push(score.totalScore);
                     totalScore += score.totalScore;
                     judgeCount++;
-                } else {
-                    row.push(0);
+                    scoringItems.forEach(item => {
+                        if (score[item.key]) {
+                            itemAverages[item.key] += score[item.key];
+                        }
+                    });
                 }
             }
         });
         
+        // 添加平均分行
+        const averageRow = ['平均分'];
+        scoringItems.forEach(item => {
+            const avg = judgeCount > 0 ? (itemAverages[item.key] / judgeCount).toFixed(2) : 0;
+            averageRow.push(avg);
+        });
         const averageScore = judgeCount > 0 ? (totalScore / judgeCount).toFixed(2) : 0;
-        row.push(averageScore, totalScore);
+        averageRow.push(averageScore);
+        averageRow.push('-');
+        workbookData.push(averageRow);
         
-        workbookData.push(row);
+        workbookData.push([]); // 空行分隔
     });
     
     // 转换为CSV格式
@@ -688,13 +737,14 @@ function exportToExcel() {
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
     link.setAttribute('href', url);
-    link.setAttribute('download', `综测评分结果_${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute('download', `综测评分详细数据_${new Date().toISOString().split('T')[0]}.csv`);
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    URL.revokeObjectURL(url);
     
-    showAlert('Excel文件导出成功！', 'success');
+    showAlert('详细评分数据已导出！', 'success');
 }
 
 // 分享链接
@@ -859,7 +909,7 @@ function showAlert(message, type) {
 }
 
 // 清除所有评分数据（仅管理员可用）
-function clearAllScores() {
+async function clearAllScores() {
     // 检查是否为管理员
     if (!currentUser || currentUser.role !== 'admin') {
         showAlert('只有管理员可以执行此操作！', 'error');
@@ -898,7 +948,13 @@ function clearAllScores() {
         localStorage.setItem('scoringData', JSON.stringify(clearedData));
         
         // 清除云端数据
-        clearCloudData();
+        try {
+            await clearCloudData();
+            console.log('云端数据清除完成');
+        } catch (error) {
+            console.error('云端数据清除失败:', error);
+            showAlert('⚠️ 本地数据已清除，但云端清除失败，请检查网络连接后重试！', 'warning');
+        }
         
         // 刷新页面显示
         renderResultsTable();
@@ -921,15 +977,10 @@ async function clearCloudData() {
     }
     
     try {
-        console.log('开始清除云端数据...');
+        console.log('开始完全清除云端数据...');
         
-        // 创建一个空的评分数据结构
-        const emptyData = {
-            lastUpdated: new Date().toISOString(),
-            clearedBy: currentUser.username,
-            clearedAt: new Date().toISOString(),
-            message: '所有评分数据已被管理员清除'
-        };
+        // 完全清空JSONBin.io中的数据
+        const emptyData = {};
         
         const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_CONFIG.binId}`, {
             method: 'PUT',
@@ -944,13 +995,37 @@ async function clearCloudData() {
         });
         
         if (response.ok) {
-            console.log('云端数据清除成功');
+            console.log('云端数据已完全清除');
+            
+            // 验证清除是否成功
+            const verifyResponse = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_CONFIG.binId}/latest`, {
+                headers: {
+                    'X-Master-Key': JSONBIN_CONFIG.masterKey,
+                    'X-Access-Key': JSONBIN_CONFIG.accessKey,
+                    'X-Bin-Private': 'true'
+                }
+            });
+            
+            if (verifyResponse.ok) {
+                const verifyData = await verifyResponse.json();
+                console.log('验证清除结果:', verifyData);
+                
+                if (Object.keys(verifyData.record || {}).length === 0) {
+                    console.log('✅ 云端数据已完全清空');
+                } else {
+                    console.warn('⚠️ 云端数据可能未完全清空');
+                }
+            }
+            
         } else {
-            console.error('云端数据清除失败:', response.status, response.statusText);
+            const errorText = await response.text();
+            console.error('云端数据清除失败:', response.status, response.statusText, errorText);
+            throw new Error(`云端清除失败: ${response.status} ${response.statusText}`);
         }
         
     } catch (error) {
         console.error('清除云端数据时出错:', error);
+        throw error;
     }
 }
 
