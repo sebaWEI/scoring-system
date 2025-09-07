@@ -200,7 +200,14 @@ async function syncData() {
             mergeServerData(serverData);
         }
         
-        // 获取合并后的本地数据
+        // 如果是管理员，只下载数据，不上传
+        if (currentUser.role === 'admin') {
+            updateSyncStatus('success', '数据下载完成（管理员只读模式）');
+            console.log('管理员模式：只下载数据，不上传');
+            return;
+        }
+        
+        // 如果是评委，正常上传数据
         const localScores = JSON.parse(localStorage.getItem('scores') || '{}');
         
         // 如果有本地数据，上传到服务器
@@ -218,6 +225,38 @@ async function syncData() {
     } catch (error) {
         console.error('数据同步失败:', error);
         updateSyncStatus('error', `同步失败: ${error.message}`);
+    }
+}
+
+// 管理员专用：下载云端数据（不上传）
+async function downloadCloudData() {
+    if (!currentUser || currentUser.role !== 'admin') {
+        showAlert('只有管理员可以执行此操作！', 'error');
+        return;
+    }
+    
+    try {
+        updateSyncStatus('syncing', '下载云端数据中...');
+        
+        // 只获取服务器数据，不上传
+        const serverData = await fetchDataFromJsonBin();
+        if (serverData) {
+            // 合并服务器数据到本地
+            mergeServerData(serverData);
+            updateSyncStatus('success', '云端数据下载完成');
+            showAlert('云端数据下载成功！', 'success');
+            
+            // 刷新管理页面显示
+            renderResultsTable();
+        } else {
+            updateSyncStatus('error', '下载失败');
+            showAlert('下载云端数据失败！', 'error');
+        }
+        
+    } catch (error) {
+        console.error('下载云端数据失败:', error);
+        updateSyncStatus('error', `下载失败: ${error.message}`);
+        showAlert('下载云端数据失败！', 'error');
     }
 }
 
@@ -384,6 +423,13 @@ function showScoringPage() {
     document.getElementById('scoringPage').style.display = 'block';
     document.getElementById('adminPage').style.display = 'none';
     
+    // 恢复同步按钮为评委模式
+    const syncButton = document.getElementById('syncButton');
+    if (syncButton) {
+        syncButton.textContent = '手动同步数据';
+        syncButton.onclick = syncData;
+    }
+    
     renderStudentList();
 }
 
@@ -392,6 +438,13 @@ function showAdminPage() {
     document.getElementById('loginPage').style.display = 'none';
     document.getElementById('scoringPage').style.display = 'none';
     document.getElementById('adminPage').style.display = 'block';
+    
+    // 修改同步按钮文本为管理员模式
+    const syncButton = document.getElementById('syncButton');
+    if (syncButton) {
+        syncButton.textContent = '下载云端数据';
+        syncButton.onclick = downloadCloudData;
+    }
     
     renderResultsTable();
 }
