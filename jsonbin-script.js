@@ -208,7 +208,7 @@ async function syncData() {
         }
         
         // 如果是评委，正常上传数据
-        const localScores = JSON.parse(localStorage.getItem('scores') || '{}');
+        const localScores = JSON.parse(localStorage.getItem('scoringData') || '{}');
         
         // 如果有本地数据，上传到服务器
         if (Object.keys(localScores).length > 0) {
@@ -378,7 +378,7 @@ async function hasLocalNewData(localScores, serverScores) {
 
 // 合并服务器数据
 function mergeServerData(serverScores) {
-    const localScores = JSON.parse(localStorage.getItem('scores') || '{}');
+    const localScores = JSON.parse(localStorage.getItem('scoringData') || '{}');
     
     // 智能合并数据：保留本地数据，只添加服务器中本地没有的数据
     Object.keys(serverScores).forEach(studentId => {
@@ -393,7 +393,7 @@ function mergeServerData(serverScores) {
         });
     });
     
-    localStorage.setItem('scores', JSON.stringify(localScores));
+    localStorage.setItem('scoringData', JSON.stringify(localScores));
     
     // 刷新页面显示
     if (currentUser && currentUser.role === 'admin') {
@@ -533,7 +533,7 @@ async function submitScore(event, studentId) {
 
 // 保存学生评分
 function saveStudentScore(studentId, judgeUsername, score, totalScore) {
-    const scores = JSON.parse(localStorage.getItem('scores') || '{}');
+    const scores = JSON.parse(localStorage.getItem('scoringData') || '{}');
     
     if (!scores[studentId]) {
         scores[studentId] = {};
@@ -545,19 +545,19 @@ function saveStudentScore(studentId, judgeUsername, score, totalScore) {
         timestamp: new Date().toISOString()
     };
     
-    localStorage.setItem('scores', JSON.stringify(scores));
+    localStorage.setItem('scoringData', JSON.stringify(scores));
 }
 
 // 获取学生评分
 function getStudentScore(studentId, judgeUsername) {
-    const scores = JSON.parse(localStorage.getItem('scores') || '{}');
+    const scores = JSON.parse(localStorage.getItem('scoringData') || '{}');
     return scores[studentId] && scores[studentId][judgeUsername] ? scores[studentId][judgeUsername].score : null;
 }
 
 // 渲染结果表格（只有管理员可以看到）
 function renderResultsTable() {
     const resultsTable = document.getElementById('resultsTable');
-    const scores = JSON.parse(localStorage.getItem('scores') || '{}');
+    const scores = JSON.parse(localStorage.getItem('scoringData') || '{}');
     
     // 统计评分进度
     let totalStudents = students.length;
@@ -686,7 +686,7 @@ function renderResultsTable() {
 
 // 导出Excel
 function exportToExcel() {
-    const scores = JSON.parse(localStorage.getItem('scores') || '{}');
+    const scores = JSON.parse(localStorage.getItem('scoringData') || '{}');
     
     // 创建工作簿数据
     const workbookData = [];
@@ -819,7 +819,7 @@ function shareLink() {
 
 // 上传数据到服务器
 async function uploadDataToServer() {
-    const scores = JSON.parse(localStorage.getItem('scores') || '{}');
+    const scores = JSON.parse(localStorage.getItem('scoringData') || '{}');
     
     if (Object.keys(scores).length === 0) {
         showAlert('没有数据需要上传！', 'warning');
@@ -846,7 +846,7 @@ async function uploadDataToServer() {
 
 // 复制所有数据
 function copyAllData() {
-    const scores = JSON.parse(localStorage.getItem('scores') || '{}');
+    const scores = JSON.parse(localStorage.getItem('scoringData') || '{}');
     const dataString = JSON.stringify(scores, null, 2);
     
     navigator.clipboard.writeText(dataString).then(() => {
@@ -857,7 +857,7 @@ function copyAllData() {
 // 清空当前用户的数据
 function clearCurrentUserData() {
     if (confirm('确定要清空当前用户的所有评分数据吗？此操作不可恢复！')) {
-        const scores = JSON.parse(localStorage.getItem('scores') || '{}');
+        const scores = JSON.parse(localStorage.getItem('scoringData') || '{}');
         
         // 清空当前用户的所有评分
         Object.keys(scores).forEach(studentId => {
@@ -866,7 +866,7 @@ function clearCurrentUserData() {
             }
         });
         
-        localStorage.setItem('scores', JSON.stringify(scores));
+        localStorage.setItem('scoringData', JSON.stringify(scores));
         showAlert('当前用户数据已清空！', 'success');
         
         // 重新渲染页面
