@@ -779,3 +779,94 @@ tr:hover {
         margin: 0;
     }
 }
+
+/* 详细评分表格样式 */
+.detailed-scores {
+    margin: 30px 0;
+    padding: 20px;
+    background: rgba(0, 150, 200, 0.03);
+    border-radius: 12px;
+    border: 1px solid rgba(0, 150, 200, 0.1);
+}
+
+.detailed-scores h3 {
+    color: #b3e5fc;
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px rgba(179, 229, 252, 0.3);
+}
+
+.detailed-scores p {
+    color: #e0e0e0;
+    margin: 5px 0;
+}
+
+.student-score-section {
+    margin: 30px 0;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.student-score-section h4 {
+    color: #b3e5fc;
+    margin-bottom: 15px;
+    text-shadow: 0 0 8px rgba(179, 229, 252, 0.3);
+    font-size: 1.2em;
+}
+
+.score-detail-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.score-detail-table th,
+.score-detail-table td {
+    padding: 10px 8px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 0.9em;
+}
+
+.score-detail-table th {
+    background: rgba(0, 150, 200, 0.15);
+    color: #b3e5fc;
+    font-weight: 600;
+    text-shadow: 0 0 5px rgba(179, 229, 252, 0.3);
+}
+
+.score-detail-table tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.average-row {
+    background: rgba(0, 150, 200, 0.08) !important;
+    border-top: 2px solid rgba(179, 229, 252, 0.3);
+}
+
+.average-row td {
+    color: #b3e5fc;
+    font-weight: 600;
+    text-shadow: 0 0 5px rgba(179, 229, 252, 0.3);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .score-detail-table {
+        font-size: 0.8em;
+    }
+    
+    .score-detail-table th,
+    .score-detail-table td {
+        padding: 6px 4px;
+    }
+    
+    .student-score-section {
+        margin: 20px 0;
+        padding: 15px;
+    }
+}
