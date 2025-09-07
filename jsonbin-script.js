@@ -277,7 +277,11 @@ async function fetchDataFromJsonBin() {
     }
     
     try {
-        console.log('从JSONBin.io获取数据...', { binId: JSONBIN_CONFIG.binId });
+        console.log('从JSONBin.io获取数据...', { 
+            binId: JSONBIN_CONFIG.binId,
+            masterKeyLength: JSONBIN_CONFIG.masterKey?.length,
+            accessKeyLength: JSONBIN_CONFIG.accessKey?.length
+        });
         
         const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_CONFIG.binId}/latest`, {
             headers: {
@@ -292,15 +296,22 @@ async function fetchDataFromJsonBin() {
         if (response.ok) {
             const data = await response.json();
             console.log('成功获取数据:', data);
+            
+            // 检查是否已被清空
+            if (data.record && data.record._cleared) {
+                console.log('数据已被清空，返回空对象');
+                return {};
+            }
+            
             return data.record || {};
         } else {
             const errorText = await response.text();
             console.error('获取数据失败:', response.status, response.statusText, errorText);
-            return null;
+            throw new Error(`HTTP ${response.status}: ${response.statusText} - ${errorText}`);
         }
     } catch (error) {
         console.error('获取数据时出错:', error);
-        return null;
+        throw error;
     }
 }
 
@@ -415,7 +426,7 @@ async function renderStudentList() {
             // 检查是否已经评分
             const studentScores = scores[student.id] || {};
             const existingScore = studentScores[currentUser.username];
-            const isScored = existingScore !== null;
+            const isScored = existingScore && existingScore.score;
         
         studentCard.innerHTML = `
             <div class="student-header">
@@ -436,7 +447,7 @@ async function renderStudentList() {
                                name="${item.key}" 
                                min="0" 
                                max="${item.maxScore}" 
-                               value="${isScored ? existingScore.score[item.key] || '' : ''}"
+                               value="${isScored && existingScore.score ? existingScore.score[item.key] || '' : ''}"
                                required>
                     </div>
                 `).join('')}
@@ -455,7 +466,11 @@ async function renderStudentList() {
             <div class="error-message">
                 <h3>数据加载失败</h3>
                 <p>无法从云端获取数据，请检查网络连接后重试。</p>
-                <button onclick="renderStudentList()" class="btn btn-primary">重新加载</button>
+                <p><strong>错误信息:</strong> ${error.message}</p>
+                <div style="margin-top: 20px;">
+                    <button onclick="renderStudentList()" class="btn btn-primary">重新加载</button>
+                    <button onclick="testConnection()" class="btn btn-warning">测试连接</button>
+                </div>
             </div>
         `;
     }
@@ -610,7 +625,7 @@ async function renderResultsTable() {
                     tableHTML += `
                         <tr>
                             <td>${users[username].name}</td>
-                            ${scoringItems.map(item => `<td>${score.score[item.key] || '-'}</td>`).join('')}
+                            ${scoringItems.map(item => `<td>${score.score && score.score[item.key] ? score.score[item.key] : '-'}</td>`).join('')}
                             <td><strong>${score.totalScore}</strong></td>
                             <td>${new Date(score.timestamp).toLocaleString()}</td>
                         </tr>
@@ -645,7 +660,7 @@ async function renderResultsTable() {
                     totalScore += score.totalScore;
                     judgeCount++;
                     scoringItems.forEach(item => {
-                        if (score.score[item.key]) {
+                        if (score.score && score.score[item.key]) {
                             itemAverages[item.key] += score.score[item.key];
                         }
                     });
@@ -681,7 +696,11 @@ async function renderResultsTable() {
             <div class="error-message">
                 <h3>数据加载失败</h3>
                 <p>无法从云端获取数据，请检查网络连接后重试。</p>
-                <button onclick="renderResultsTable()" class="btn btn-primary">重新加载</button>
+                <p><strong>错误信息:</strong> ${error.message}</p>
+                <div style="margin-top: 20px;">
+                    <button onclick="renderResultsTable()" class="btn btn-primary">重新加载</button>
+                    <button onclick="testConnection()" class="btn btn-warning">测试连接</button>
+                </div>
             </div>
         `;
     }
@@ -726,7 +745,7 @@ async function exportToExcel() {
                 
                 if (score) {
                     scoringItems.forEach(item => {
-                        row.push(score.score[item.key] || 0);
+                        row.push(score.score && score.score[item.key] ? score.score[item.key] : 0);
                     });
                     row.push(score.totalScore);
                     row.push(new Date(score.timestamp).toLocaleString());
@@ -759,7 +778,7 @@ async function exportToExcel() {
                     totalScore += score.totalScore;
                     judgeCount++;
                     scoringItems.forEach(item => {
-                        if (score.score[item.key]) {
+                        if (score.score && score.score[item.key]) {
                             itemAverages[item.key] += score.score[item.key];
                         }
                     });
@@ -1021,6 +1040,21 @@ async function clearAllScores() {
     }
 }
 
+// 测试JSONBin.io连接
+async function testConnection() {
+    try {
+        console.log('开始测试JSONBin.io连接...');
+        const data = await fetchDataFromJsonBin();
+        console.log('连接测试成功，获取到的数据:', data);
+        showAlert('JSONBin.io连接测试成功！', 'success');
+        return true;
+    } catch (error) {
+        console.error('连接测试失败:', error);
+        showAlert(`JSONBin.io连接测试失败: ${error.message}`, 'error');
+        return false;
+    }
+}
+
 // 测试函数：创建测试数据
 function createTestData() {
     const testData = {
@@ -1088,8 +1122,13 @@ async function clearCloudData() {
     try {
         console.log('开始完全清除云端数据...');
         
-        // 完全清空JSONBin.io中的数据
-        const emptyData = {};
+        // JSONBin.io不允许完全清空，所以使用一个标记对象表示已清空
+        const clearedData = {
+            _cleared: true,
+            _clearedBy: currentUser.username,
+            _clearedAt: new Date().toISOString(),
+            _message: "所有评分数据已被管理员清除"
+        };
         
         const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_CONFIG.binId}`, {
             method: 'PUT',
@@ -1100,7 +1139,7 @@ async function clearCloudData() {
                 'X-Bin-Name': 'scoring-system-data',
                 'X-Bin-Private': 'true'
             },
-            body: JSON.stringify(emptyData)
+            body: JSON.stringify(clearedData)
         });
         
         if (response.ok) {
@@ -1119,7 +1158,7 @@ async function clearCloudData() {
                 const verifyData = await verifyResponse.json();
                 console.log('验证清除结果:', verifyData);
                 
-                if (Object.keys(verifyData.record || {}).length === 0) {
+                if (verifyData.record && verifyData.record._cleared) {
                     console.log('✅ 云端数据已完全清空');
                 } else {
                     console.warn('⚠️ 云端数据可能未完全清空');
