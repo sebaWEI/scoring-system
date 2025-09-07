@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // 处理登录
-function handleLogin(e) {
+async function handleLogin(e) {
     e.preventDefault();
     console.log('开始处理登录...');
     
@@ -177,58 +177,38 @@ function handleLogin(e) {
         
         showAlert('登录成功！', 'success');
         
-        // 登录后立即同步数据
-        console.log('开始同步数据...');
-        syncData();
+        // 登录后立即刷新数据
+        console.log('开始刷新数据...');
+        await syncData();
     } else {
         console.log('登录验证失败');
         showAlert('用户名或密码错误！', 'error');
     }
 }
 
-// 同步数据到JSONBin.io
+// 同步数据到JSONBin.io（现在只是刷新显示）
 async function syncData() {
     if (!currentUser) return;
     
     try {
-        updateSyncStatus('syncing', '同步中...');
+        updateSyncStatus('syncing', '刷新数据中...');
         
-        // 先获取服务器数据
-        const serverData = await fetchDataFromJsonBin();
-        if (serverData) {
-            // 合并服务器数据到本地
-            mergeServerData(serverData);
-        }
-        
-        // 如果是管理员，只下载数据，不上传
+        // 刷新页面显示
         if (currentUser.role === 'admin') {
-            updateSyncStatus('success', '数据下载完成（管理员只读模式）');
-            console.log('管理员模式：只下载数据，不上传');
-            return;
-        }
-        
-        // 如果是评委，正常上传数据
-        const localScores = JSON.parse(localStorage.getItem('scoringData') || '{}');
-        
-        // 如果有本地数据，上传到服务器
-        if (Object.keys(localScores).length > 0) {
-            const uploadSuccess = await uploadDataToJsonBin(localScores);
-            if (uploadSuccess) {
-                updateSyncStatus('success', '同步成功');
-            } else {
-                updateSyncStatus('error', '上传失败');
-            }
+            await renderResultsTable();
+            updateSyncStatus('success', '数据刷新完成');
         } else {
-            updateSyncStatus('success', '同步成功（无本地数据）');
+            await renderStudentList();
+            updateSyncStatus('success', '数据刷新完成');
         }
         
     } catch (error) {
-        console.error('数据同步失败:', error);
-        updateSyncStatus('error', `同步失败: ${error.message}`);
+        console.error('数据刷新失败:', error);
+        updateSyncStatus('error', `刷新失败: ${error.message}`);
     }
 }
 
-// 管理员专用：下载云端数据（不上传）
+// 管理员专用：刷新云端数据
 async function downloadCloudData() {
     if (!currentUser || currentUser.role !== 'admin') {
         showAlert('只有管理员可以执行此操作！', 'error');
@@ -236,27 +216,17 @@ async function downloadCloudData() {
     }
     
     try {
-        updateSyncStatus('syncing', '下载云端数据中...');
+        updateSyncStatus('syncing', '刷新云端数据中...');
         
-        // 只获取服务器数据，不上传
-        const serverData = await fetchDataFromJsonBin();
-        if (serverData) {
-            // 合并服务器数据到本地
-            mergeServerData(serverData);
-            updateSyncStatus('success', '云端数据下载完成');
-            showAlert('云端数据下载成功！', 'success');
-            
-            // 刷新管理页面显示
-            renderResultsTable();
-        } else {
-            updateSyncStatus('error', '下载失败');
-            showAlert('下载云端数据失败！', 'error');
-        }
+        // 刷新管理页面显示
+        await renderResultsTable();
+        updateSyncStatus('success', '云端数据刷新完成');
+        showAlert('云端数据刷新成功！', 'success');
         
     } catch (error) {
-        console.error('下载云端数据失败:', error);
-        updateSyncStatus('error', `下载失败: ${error.message}`);
-        showAlert('下载云端数据失败！', 'error');
+        console.error('刷新云端数据失败:', error);
+        updateSyncStatus('error', `刷新失败: ${error.message}`);
+        showAlert('刷新云端数据失败！', 'error');
     }
 }
 
@@ -376,31 +346,10 @@ async function hasLocalNewData(localScores, serverScores) {
     return false;
 }
 
-// 合并服务器数据
+// 合并服务器数据（已废弃，现在完全依赖云端数据）
 function mergeServerData(serverScores) {
-    const localScores = JSON.parse(localStorage.getItem('scoringData') || '{}');
-    
-    // 智能合并数据：保留本地数据，只添加服务器中本地没有的数据
-    Object.keys(serverScores).forEach(studentId => {
-        if (!localScores[studentId]) {
-            localScores[studentId] = {};
-        }
-        Object.keys(serverScores[studentId]).forEach(judgeUsername => {
-            // 只有当本地没有该评委的评分时，才使用服务器数据
-            if (!localScores[studentId][judgeUsername]) {
-                localScores[studentId][judgeUsername] = serverScores[studentId][judgeUsername];
-            }
-        });
-    });
-    
-    localStorage.setItem('scoringData', JSON.stringify(localScores));
-    
-    // 刷新页面显示
-    if (currentUser && currentUser.role === 'admin') {
-        renderResultsTable();
-    } else if (currentUser) {
-        renderStudentList();
-    }
+    console.log('mergeServerData已废弃，现在完全依赖云端数据');
+    // 这个函数现在不再需要，因为所有数据都直接从云端获取
 }
 
 // 显示用户信息
@@ -450,17 +399,23 @@ function showAdminPage() {
 }
 
 // 渲染学生列表
-function renderStudentList() {
+async function renderStudentList() {
     const studentList = document.getElementById('studentList');
-    studentList.innerHTML = '';
+    studentList.innerHTML = '<div class="loading">正在加载数据...</div>';
 
-    students.forEach(student => {
-        const studentCard = document.createElement('div');
-        studentCard.className = 'student-card';
-        
-        // 检查是否已经评分
-        const existingScore = getStudentScore(student.id, currentUser.username);
-        const isScored = existingScore !== null;
+    try {
+        // 从云端获取数据
+        const cloudData = await fetchDataFromJsonBin();
+        const scores = cloudData || {};
+
+        students.forEach(student => {
+            const studentCard = document.createElement('div');
+            studentCard.className = 'student-card';
+            
+            // 检查是否已经评分
+            const studentScores = scores[student.id] || {};
+            const existingScore = studentScores[currentUser.username];
+            const isScored = existingScore !== null;
         
         studentCard.innerHTML = `
             <div class="student-header">
@@ -481,7 +436,7 @@ function renderStudentList() {
                                name="${item.key}" 
                                min="0" 
                                max="${item.maxScore}" 
-                               value="${isScored ? existingScore[item.key] || '' : ''}"
+                               value="${isScored ? existingScore.score[item.key] || '' : ''}"
                                required>
                     </div>
                 `).join('')}
@@ -493,6 +448,17 @@ function renderStudentList() {
         
         studentList.appendChild(studentCard);
     });
+    
+    } catch (error) {
+        console.error('渲染学生列表失败:', error);
+        studentList.innerHTML = `
+            <div class="error-message">
+                <h3>数据加载失败</h3>
+                <p>无法从云端获取数据，请检查网络连接后重试。</p>
+                <button onclick="renderStudentList()" class="btn btn-primary">重新加载</button>
+            </div>
+        `;
+    }
 }
 
 // 提交评分
@@ -510,64 +476,80 @@ async function submitScore(event, studentId) {
     });
     
     // 检查是否为更新操作
-    const isUpdate = getStudentScore(studentId, currentUser.username) !== null;
+    const existingScore = await getStudentScore(studentId, currentUser.username);
+    const isUpdate = existingScore !== null;
     
-    // 保存评分数据
-    saveStudentScore(studentId, currentUser.username, score, totalScore);
-    
-    // 自动同步到云端
     try {
-        updateSyncStatus('syncing', '正在同步到云端...');
-        await syncData();
-        showAlert(isUpdate ? '评分更新成功！已自动同步到云端。' : '评分提交成功！已自动同步到云端。', 'success');
+        updateSyncStatus('syncing', '正在保存到云端...');
+        
+        // 保存评分数据到云端
+        await saveStudentScore(studentId, currentUser.username, score, totalScore);
+        
+        updateSyncStatus('success', '保存成功');
+        showAlert(isUpdate ? '评分更新成功！' : '评分提交成功！', 'success');
+        
+        // 重新渲染学生列表
+        await renderStudentList();
+        
     } catch (error) {
-        console.error('自动同步失败:', error);
-        showAlert(isUpdate ? '评分更新成功！但同步到云端失败，请手动点击"同步数据"按钮。' : '评分提交成功！但同步到云端失败，请手动点击"同步数据"按钮。', 'warning');
+        console.error('保存评分失败:', error);
+        updateSyncStatus('error', '保存失败');
+        showAlert('保存评分失败，请检查网络连接后重试！', 'error');
     }
-    
-    // 重新渲染学生列表
-    setTimeout(() => {
-        renderStudentList();
-    }, 1000);
 }
 
-// 保存学生评分
-function saveStudentScore(studentId, judgeUsername, score, totalScore) {
-    const scores = JSON.parse(localStorage.getItem('scoringData') || '{}');
-    
-    if (!scores[studentId]) {
-        scores[studentId] = {};
+// 保存学生评分（直接上传到云端）
+async function saveStudentScore(studentId, judgeUsername, score, totalScore) {
+    try {
+        // 先获取云端数据
+        const cloudData = await fetchDataFromJsonBin();
+        const scores = cloudData || {};
+        
+        // 更新评分数据
+        if (!scores[studentId]) {
+            scores[studentId] = {};
+        }
+        
+        scores[studentId][judgeUsername] = {
+            score: score,
+            totalScore: totalScore,
+            timestamp: new Date().toISOString()
+        };
+        
+        // 直接上传到云端
+        const uploadSuccess = await uploadDataToJsonBin(scores);
+        if (!uploadSuccess) {
+            throw new Error('上传到云端失败');
+        }
+        
+        console.log('评分已保存到云端');
+        
+    } catch (error) {
+        console.error('保存评分失败:', error);
+        throw error;
     }
-    
-    scores[studentId][judgeUsername] = {
-        score: score,
-        totalScore: totalScore,
-        timestamp: new Date().toISOString()
-    };
-    
-    localStorage.setItem('scoringData', JSON.stringify(scores));
 }
 
-// 获取学生评分
-function getStudentScore(studentId, judgeUsername) {
-    const scores = JSON.parse(localStorage.getItem('scoringData') || '{}');
-    return scores[studentId] && scores[studentId][judgeUsername] ? scores[studentId][judgeUsername].score : null;
+// 获取学生评分（从云端）
+async function getStudentScore(studentId, judgeUsername) {
+    try {
+        const cloudData = await fetchDataFromJsonBin();
+        const scores = cloudData || {};
+        return scores[studentId] && scores[studentId][judgeUsername] ? scores[studentId][judgeUsername].score : null;
+    } catch (error) {
+        console.error('获取评分失败:', error);
+        return null;
+    }
 }
 
 // 渲染结果表格（只有管理员可以看到）
-function renderResultsTable() {
+async function renderResultsTable() {
     const resultsTable = document.getElementById('resultsTable');
-    const scores = JSON.parse(localStorage.getItem('scoringData') || '{}');
     
-    // 检查是否有数据在scores键中（兼容旧数据）
-    const scoresData = JSON.parse(localStorage.getItem('scores') || '{}');
-    if (Object.keys(scores).length === 0 && Object.keys(scoresData).length > 0) {
-        console.log('发现数据在scores键中，正在合并到scoringData...');
-        localStorage.setItem('scoringData', JSON.stringify(scoresData));
-        // 重新获取数据
-        const mergedScores = JSON.parse(localStorage.getItem('scoringData') || '{}');
-        return renderResultsTable(); // 递归调用以重新渲染
-    }
+    try {
+        // 从云端获取数据
+        const scores = await fetchDataFromJsonBin() || {};
+        console.log('从云端获取的数据:', scores);
     
     // 统计评分进度
     let totalStudents = students.length;
@@ -692,11 +674,23 @@ function renderResultsTable() {
     });
     
     resultsTable.innerHTML = tableHTML;
+    
+    } catch (error) {
+        console.error('渲染结果表格失败:', error);
+        resultsTable.innerHTML = `
+            <div class="error-message">
+                <h3>数据加载失败</h3>
+                <p>无法从云端获取数据，请检查网络连接后重试。</p>
+                <button onclick="renderResultsTable()" class="btn btn-primary">重新加载</button>
+            </div>
+        `;
+    }
 }
 
 // 导出Excel
-function exportToExcel() {
-    const scores = JSON.parse(localStorage.getItem('scoringData') || '{}');
+async function exportToExcel() {
+    try {
+        const scores = await fetchDataFromJsonBin() || {};
     
     // 创建工作簿数据
     const workbookData = [];
@@ -808,6 +802,11 @@ function exportToExcel() {
     URL.revokeObjectURL(url);
     
     showAlert('详细评分数据已导出！', 'success');
+    
+    } catch (error) {
+        console.error('导出Excel失败:', error);
+        showAlert('导出失败，请检查网络连接后重试！', 'error');
+    }
 }
 
 // 分享链接
@@ -855,35 +854,48 @@ async function uploadDataToServer() {
 }
 
 // 复制所有数据
-function copyAllData() {
-    const scores = JSON.parse(localStorage.getItem('scoringData') || '{}');
-    const dataString = JSON.stringify(scores, null, 2);
-    
-    navigator.clipboard.writeText(dataString).then(() => {
-        showAlert('所有数据已复制到剪贴板！', 'success');
-    });
+async function copyAllData() {
+    try {
+        const scores = await fetchDataFromJsonBin() || {};
+        const dataString = JSON.stringify(scores, null, 2);
+        
+        navigator.clipboard.writeText(dataString).then(() => {
+            showAlert('所有数据已复制到剪贴板！', 'success');
+        });
+    } catch (error) {
+        console.error('复制数据失败:', error);
+        showAlert('复制数据失败，请重试！', 'error');
+    }
 }
 
 // 清空当前用户的数据
-function clearCurrentUserData() {
+async function clearCurrentUserData() {
     if (confirm('确定要清空当前用户的所有评分数据吗？此操作不可恢复！')) {
-        const scores = JSON.parse(localStorage.getItem('scoringData') || '{}');
-        
-        // 清空当前用户的所有评分
-        Object.keys(scores).forEach(studentId => {
-            if (scores[studentId][currentUser.username]) {
-                delete scores[studentId][currentUser.username];
+        try {
+            // 获取云端数据
+            const cloudData = await fetchDataFromJsonBin();
+            const scores = cloudData || {};
+            
+            // 清空当前用户的所有评分
+            Object.keys(scores).forEach(studentId => {
+                if (scores[studentId][currentUser.username]) {
+                    delete scores[studentId][currentUser.username];
+                }
+            });
+            
+            // 上传到云端
+            await uploadDataToJsonBin(scores);
+            showAlert('当前用户数据已清空！', 'success');
+            
+            // 重新渲染页面
+            if (currentUser.role === 'admin') {
+                await renderResultsTable();
+            } else {
+                await renderStudentList();
             }
-        });
-        
-        localStorage.setItem('scoringData', JSON.stringify(scores));
-        showAlert('当前用户数据已清空！', 'success');
-        
-        // 重新渲染页面
-        if (currentUser.role === 'admin') {
-            renderResultsTable();
-        } else {
-            renderStudentList();
+        } catch (error) {
+            console.error('清空用户数据失败:', error);
+            showAlert('清空用户数据失败，请重试！', 'error');
         }
     }
 }
@@ -992,36 +1004,12 @@ async function clearAllScores() {
     }
     
     try {
-        // 清除本地存储的所有评分数据
-        const allData = JSON.parse(localStorage.getItem('scoringData') || '{}');
-        const clearedData = {};
-        
-        // 保留用户信息，只清除评分数据
-        Object.keys(allData).forEach(key => {
-            // 检查是否是学生ID（001-035）
-            if (/^\d{3}$/.test(key)) {
-                // 这是学生评分数据，清除它
-                console.log(`清除学生评分数据: ${key}`);
-            } else {
-                // 保留其他数据（如用户信息等）
-                clearedData[key] = allData[key];
-            }
-        });
-        
-        // 保存清除后的数据
-        localStorage.setItem('scoringData', JSON.stringify(clearedData));
-        
         // 清除云端数据
-        try {
-            await clearCloudData();
-            console.log('云端数据清除完成');
-        } catch (error) {
-            console.error('云端数据清除失败:', error);
-            showAlert('⚠️ 本地数据已清除，但云端清除失败，请检查网络连接后重试！', 'warning');
-        }
+        await clearCloudData();
+        console.log('云端数据清除完成');
         
         // 刷新页面显示
-        renderResultsTable();
+        await renderResultsTable();
         
         showAlert('✅ 所有评分数据已成功清除！', 'success');
         
