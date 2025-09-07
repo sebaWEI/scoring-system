@@ -813,3 +813,99 @@ function showAlert(message, type) {
     }, 3000);
 }
 
+// 清除所有评分数据（仅管理员可用）
+function clearAllScores() {
+    // 检查是否为管理员
+    if (!currentUser || currentUser.role !== 'admin') {
+        showAlert('只有管理员可以执行此操作！', 'error');
+        return;
+    }
+    
+    // 确认对话框
+    const confirmed = confirm('⚠️ 警告：此操作将清除所有评委的评分数据，且无法恢复！\n\n确定要继续吗？');
+    if (!confirmed) {
+        return;
+    }
+    
+    // 二次确认
+    const doubleConfirmed = confirm('请再次确认：这将删除所有评分数据，包括本地和云端数据！\n\n点击"确定"将立即执行清除操作。');
+    if (!doubleConfirmed) {
+        return;
+    }
+    
+    try {
+        // 清除本地存储的所有评分数据
+        const allData = JSON.parse(localStorage.getItem('scoringData') || '{}');
+        const clearedData = {};
+        
+        // 保留用户信息，只清除评分数据
+        Object.keys(allData).forEach(key => {
+            if (key.startsWith('scores_')) {
+                // 这是评分数据，清除它
+                console.log(`清除评分数据: ${key}`);
+            } else {
+                // 保留其他数据（如用户信息等）
+                clearedData[key] = allData[key];
+            }
+        });
+        
+        // 保存清除后的数据
+        localStorage.setItem('scoringData', JSON.stringify(clearedData));
+        
+        // 清除云端数据
+        clearCloudData();
+        
+        // 刷新页面显示
+        renderResultsTable();
+        
+        showAlert('✅ 所有评分数据已成功清除！', 'success');
+        
+        console.log('所有评分数据已清除');
+        
+    } catch (error) {
+        console.error('清除数据时出错:', error);
+        showAlert('清除数据时出错，请重试！', 'error');
+    }
+}
+
+// 清除云端数据
+async function clearCloudData() {
+    if (!checkJsonBinConfig()) {
+        console.log('JSONBin.io配置错误，跳过云端清除');
+        return;
+    }
+    
+    try {
+        console.log('开始清除云端数据...');
+        
+        // 创建一个空的评分数据结构
+        const emptyData = {
+            lastUpdated: new Date().toISOString(),
+            clearedBy: currentUser.username,
+            clearedAt: new Date().toISOString(),
+            message: '所有评分数据已被管理员清除'
+        };
+        
+        const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_CONFIG.binId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Master-Key': JSONBIN_CONFIG.masterKey,
+                'X-Access-Key': JSONBIN_CONFIG.accessKey,
+                'X-Bin-Name': 'scoring-system-data',
+                'X-Bin-Private': 'true'
+            },
+            body: JSON.stringify(emptyData)
+        });
+        
+        if (response.ok) {
+            console.log('云端数据清除成功');
+        } else {
+            console.error('云端数据清除失败:', response.status, response.statusText);
+        }
+        
+    } catch (error) {
+        console.error('清除云端数据时出错:', error);
+    }
+}
+
