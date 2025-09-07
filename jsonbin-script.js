@@ -618,7 +618,7 @@ function renderResultsTable() {
                     tableHTML += `
                         <tr>
                             <td>${users[username].name}</td>
-                            ${scoringItems.map(item => `<td>${score[item.key] || '-'}</td>`).join('')}
+                            ${scoringItems.map(item => `<td>${score.score[item.key] || '-'}</td>`).join('')}
                             <td><strong>${score.totalScore}</strong></td>
                             <td>${new Date(score.timestamp).toLocaleString()}</td>
                         </tr>
@@ -653,8 +653,8 @@ function renderResultsTable() {
                     totalScore += score.totalScore;
                     judgeCount++;
                     scoringItems.forEach(item => {
-                        if (score[item.key]) {
-                            itemAverages[item.key] += score[item.key];
+                        if (score.score[item.key]) {
+                            itemAverages[item.key] += score.score[item.key];
                         }
                     });
                 }
@@ -722,7 +722,7 @@ function exportToExcel() {
                 
                 if (score) {
                     scoringItems.forEach(item => {
-                        row.push(score[item.key] || 0);
+                        row.push(score.score[item.key] || 0);
                     });
                     row.push(score.totalScore);
                     row.push(new Date(score.timestamp).toLocaleString());
@@ -755,8 +755,8 @@ function exportToExcel() {
                     totalScore += score.totalScore;
                     judgeCount++;
                     scoringItems.forEach(item => {
-                        if (score[item.key]) {
-                            itemAverages[item.key] += score[item.key];
+                        if (score.score[item.key]) {
+                            itemAverages[item.key] += score.score[item.key];
                         }
                     });
                 }
@@ -988,9 +988,10 @@ async function clearAllScores() {
         
         // 保留用户信息，只清除评分数据
         Object.keys(allData).forEach(key => {
-            if (key.startsWith('scores_')) {
-                // 这是评分数据，清除它
-                console.log(`清除评分数据: ${key}`);
+            // 检查是否是学生ID（001-035）
+            if (/^\d{3}$/.test(key)) {
+                // 这是学生评分数据，清除它
+                console.log(`清除学生评分数据: ${key}`);
             } else {
                 // 保留其他数据（如用户信息等）
                 clearedData[key] = allData[key];
