@@ -508,7 +508,6 @@ function renderResultsTable() {
     
     // 统计评分进度
     let totalStudents = students.length;
-    let scoredStudents = 0;
     let totalJudges = Object.keys(users).filter(username => users[username].role === 'judge').length;
     let completedJudges = 0;
     
@@ -533,55 +532,101 @@ function renderResultsTable() {
             <p>已完成评分的评委：${completedJudges}人</p>
             <p>完成率：${((completedJudges / totalJudges) * 100).toFixed(1)}%</p>
         </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>学号</th>
-                    ${Object.keys(users).filter(username => users[username].role === 'judge').map(username => 
-                        `<th>${users[username].name}</th>`
-                    ).join('')}
-                    <th>平均分</th>
-                    <th>总分</th>
-                </tr>
-            </thead>
-            <tbody>
+        <div class="detailed-scores">
+            <h3>详细评分数据</h3>
+            <p><small>显示每个评委对每个学生的各项评分</small></p>
+        </div>
     `;
     
+    // 为每个学生创建详细的评分表格
     students.forEach(student => {
         const studentScores = scores[student.id] || {};
-        const judgeScores = [];
+        
+        tableHTML += `
+            <div class="student-score-section">
+                <h4>${student.name} (学号: ${student.id})</h4>
+                <table class="score-detail-table">
+                    <thead>
+                        <tr>
+                            <th>评委</th>
+                            ${scoringItems.map(item => `<th>${item.label}</th>`).join('')}
+                            <th>总分</th>
+                            <th>评分时间</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+        
+        // 显示每个评委的评分
+        Object.keys(users).forEach(username => {
+            if (users[username].role === 'judge') {
+                const score = studentScores[username];
+                if (score) {
+                    tableHTML += `
+                        <tr>
+                            <td>${users[username].name}</td>
+                            ${scoringItems.map(item => `<td>${score[item.key] || '-'}</td>`).join('')}
+                            <td><strong>${score.totalScore}</strong></td>
+                            <td>${new Date(score.timestamp).toLocaleString()}</td>
+                        </tr>
+                    `;
+                } else {
+                    tableHTML += `
+                        <tr>
+                            <td>${users[username].name}</td>
+                            ${scoringItems.map(() => `<td>-</td>`).join('')}
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                    `;
+                }
+            }
+        });
+        
+        // 计算该学生的平均分和总分
         let totalScore = 0;
         let judgeCount = 0;
+        const itemAverages = {};
+        
+        // 初始化各项平均分
+        scoringItems.forEach(item => {
+            itemAverages[item.key] = 0;
+        });
         
         Object.keys(users).forEach(username => {
             if (users[username].role === 'judge') {
                 const score = studentScores[username];
                 if (score) {
-                    judgeScores.push(score.totalScore);
                     totalScore += score.totalScore;
                     judgeCount++;
-                } else {
-                    judgeScores.push('-');
+                    scoringItems.forEach(item => {
+                        if (score[item.key]) {
+                            itemAverages[item.key] += score[item.key];
+                        }
+                    });
                 }
             }
         });
         
-        const averageScore = judgeCount > 0 ? (totalScore / judgeCount).toFixed(2) : '-';
+        // 计算平均分
+        const averageScore = judgeCount > 0 ? (totalScore / judgeCount).toFixed(2) : 0;
+        scoringItems.forEach(item => {
+            itemAverages[item.key] = judgeCount > 0 ? (itemAverages[item.key] / judgeCount).toFixed(2) : 0;
+        });
         
+        // 添加平均分行
         tableHTML += `
-            <tr>
-                <td>${student.id}</td>
-                ${judgeScores.map(score => `<td>${score}</td>`).join('')}
-                <td>${averageScore}</td>
-                <td>${totalScore}</td>
-            </tr>
+                        <tr class="average-row">
+                            <td><strong>平均分</strong></td>
+                            ${scoringItems.map(item => `<td><strong>${itemAverages[item.key]}</strong></td>`).join('')}
+                            <td><strong>${averageScore}</strong></td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         `;
     });
-    
-    tableHTML += `
-            </tbody>
-        </table>
-    `;
     
     resultsTable.innerHTML = tableHTML;
 }
