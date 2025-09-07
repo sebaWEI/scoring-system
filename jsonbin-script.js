@@ -62,13 +62,11 @@ const students = [
 
 // 评分项目
 const scoringItems = [
-    { key: 'ideology', label: '思想政治', maxScore: 100 },
-    { key: 'behavior', label: '行为规范', maxScore: 100 },
-    { key: 'attitude', label: '学习态度', maxScore: 100 },
-    { key: 'health', label: '身心健康', maxScore: 100 },
-    { key: 'academic', label: '学术科研', maxScore: 100 },
-    { key: 'social', label: '社会工作', maxScore: 100 },
-    { key: 'practice', label: '实践活动', maxScore: 100 }
+    { key: 'ideology', label: '思想政治', maxScore: 3 },
+    { key: 'behavior', label: '行为规范', maxScore: 5 },
+    { key: 'attitude', label: '学习态度', maxScore: 3 },
+    { key: 'health', label: '身心健康', maxScore: 3 },
+    { key: 'social', label: '学生工作', maxScore: 3 },
 ];
 
 // 当前登录用户
