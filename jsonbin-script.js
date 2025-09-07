@@ -75,7 +75,7 @@ let currentUser = null;
 
 // JSONBin.io配置 - 请替换为您的实际配置
 const JSONBIN_CONFIG = {
-    binId: '68bc403443b1c97be93900a1', // 替换为您的Bin ID
+    binId: '68bd39c7d0ea881f4074addd', // 替换为您的Bin ID
     masterKey: '$2a$10$M69mCff7TrvGixakZX7dTe7g6DNxzcB5auPCw3gYuUktMT9UMdbWm', // 替换为您的Master Key
     accessKey: '$2a$10$M69mCff7TrvGixakZX7dTe7g6DNxzcB5auPCw3gYuUktMT9UMdbWm' // 替换为您的Access Key
 };
